@@ -1,0 +1,13 @@
+# Job data. The template ships empty; a clone fills these and keeps them local.
+media/*
+work/*
+out/*
+!media/.gitkeep
+!work/.gitkeep
+!out/.gitkeep
+
+.env
+.venv/
+__pycache__/
+*.pyc
+.DS_Store

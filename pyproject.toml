@@ -1,0 +1,28 @@
+[project]
+name = "subtitler"
+version = "0.1.0"
+description = "Multi-engine transcription, AI translation and subtitle production for any language pair"
+requires-python = ">=3.11"
+dependencies = [
+    "srt>=3.5.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+whisper-local = ["mlx-whisper>=0.4.0; sys_platform == 'darwin'", "faster-whisper>=1.0.0; sys_platform != 'darwin'"]
+elevenlabs = ["elevenlabs>=1.0.0"]
+openai = ["openai>=1.0.0"]
+deepgram = ["deepgram-sdk>=3.0.0"]
+assemblyai = ["assemblyai>=0.30.0"]
+anthropic = ["anthropic>=0.40.0"]
+ner = ["spacy>=3.7.0"]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

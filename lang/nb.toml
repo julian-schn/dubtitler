@@ -1,0 +1,90 @@
+# Norwegian Bokmål language pack.
+
+name = "Norwegian Bokmål"
+ner_model = "nb_core_news_lg"
+
+notes = """
+Særskriving, wrongly splitting a compound into two words, is the most common
+error in written Norwegian and the one an LLM is most likely to make, because
+its Norwegian sits downstream of a great deal of English. The never_trail list
+is what keeps a line break from landing inside a compound or between an article
+and its noun.
+"""
+
+function_words = [
+  "en", "et", "den", "det", "de", "denne", "dette", "disse",
+  "og", "eller", "men", "for", "så", "at", "som", "når", "da", "fordi",
+  "hvis", "der", "mens", "enn", "om", "jeg", "du", "han", "hun", "vi",
+  "dere", "meg", "deg", "seg", "oss", "ham", "henne", "dem",
+  "er", "var", "har", "hadde", "blir", "ble", "kan", "kunne", "må",
+  "skal", "skulle", "vil", "ville", "ikke", "ingen", "noe", "noen",
+  "i", "på", "til", "av", "med", "fra", "under", "over", "ved", "hos",
+  "mot", "etter", "før", "gjennom", "uten", "mellom", "blant",
+  "jo", "nå", "her", "bare", "også", "veldig", "helt",
+]
+
+negations = ["ikke", "ingen", "intet", "aldri", "verken", "uten", "ingenting"]
+
+break_before = [
+  "og", "men", "eller", "for", "så", "at", "som", "når", "da", "fordi",
+  "hvis", "der", "mens", "enn", "om", "til", "med", "på", "i", "av", "fra",
+]
+
+never_trail = [
+  "en", "et", "den", "det", "de", "min", "mitt", "mine", "din", "vår", "sin",
+  "og", "men", "eller", "å", "som", "at", "i", "på", "til", "av", "med",
+  "for", "fra", "om", "under", "over", "ved", "hos", "mot", "etter", "før",
+  "gjennom", "uten", "mellom", "blant", "hver", "noen", "alle", "denne",
+]
+
+# Norwegian inflection is not folded: unlike German dialect elision, an ending
+# here usually carries real grammatical information.
+elision_suffixes = []
+
+[transliterate]
+"æ" = "ae"
+"ø" = "oe"
+"å" = "aa"
+
+[numbers]
+joiner = ""
+
+[numbers.units]
+null = 0
+en = 1
+ett = 1
+to = 2
+tre = 3
+fire = 4
+fem = 5
+seks = 6
+sju = 7
+syv = 7
+aatte = 8
+ni = 9
+
+[numbers.teens]
+ti = 10
+elleve = 11
+tolv = 12
+tretten = 13
+fjorten = 14
+femten = 15
+seksten = 16
+sytten = 17
+atten = 18
+nitten = 19
+
+[numbers.tens]
+tjue = 20
+tretti = 30
+foerti = 40
+femti = 50
+seksti = 60
+sytti = 70
+aatti = 80
+nitti = 90
+
+[numbers.scale]
+hundre = 100
+tusen = 1000

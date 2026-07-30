@@ -1,0 +1,113 @@
+# German language pack.
+#
+# Verified against real Swabian testimony material. These lists are the reason
+# cross-engine flagging on that job dropped from 87% of segments to 61%, which
+# is the difference between a review gate that gets read and one that gets
+# skimmed.
+#
+# TOML note: every key below the first [table] header belongs to that table, so
+# all root-level keys must stay above them.
+
+name = "German"
+ner_model = "de_core_news_lg"
+
+notes = """
+German capitalises every noun, so any "capitalised mid-sentence means proper
+noun" heuristic fires on almost every content word. Named-entity detection is
+not optional here.
+
+casefold() maps ss onto ß, so anything comparing against these lists must fold
+the same way or `Bloß` silently fails to match `bloß`.
+"""
+
+# Unstressed function words are where engines disagree most and where it matters
+# least: im against am, mir against mich, ist against war. A disagreement
+# confined to these is engine noise, not a transcription error.
+function_words = [
+  "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen", "einem",
+  "einer", "eines", "und", "oder", "aber", "denn", "doch", "ja", "nein",
+  "ich", "du", "er", "sie", "es", "wir", "ihr", "mich", "mir", "dich", "dir",
+  "sich", "uns", "euch", "ihm", "ihn", "ihnen", "denen", "man", "wer", "was",
+  "wo", "wie", "wenn", "als", "dass", "ob", "weil", "damit", "also", "so",
+  "auch", "noch", "nur", "schon", "sehr", "mal", "halt", "eben", "dann",
+  "bloß", "gar", "wohl", "etwa", "ganz", "eigentlich", "vielleicht", "wieder",
+  "da", "hier", "dort", "jetzt", "immer", "nicht", "nichts", "kein", "keine",
+  "in", "im", "an", "am", "auf", "aus", "bei", "mit", "von", "vom", "zu",
+  "zum", "zur", "für", "über", "unter", "vor", "nach", "um", "durch", "ohne",
+  "ist", "war", "sind", "waren", "bin", "hat", "hatte", "habe", "haben",
+  "wird", "werden", "wurde", "kann", "könnte", "muss", "will", "soll",
+  "äh", "ähm", "ah", "ach", "oh", "na", "nun",
+]
+
+# Losing one of these inverts a sentence and the result still reads as fluent,
+# so nothing downstream catches it.
+negations = [
+  "nicht", "kein", "keine", "keinen", "nie", "niemals", "niemand",
+  "nichts", "ohne", "weder", "nirgends",
+]
+
+break_before = [
+  "und", "aber", "oder", "denn", "dass", "weil", "wenn", "als", "damit",
+  "obwohl", "sondern", "in", "auf", "mit", "von", "zu", "für", "nach",
+  "über", "durch",
+]
+
+never_trail = [
+  "der", "die", "das", "ein", "eine", "einen", "einem", "einer", "und",
+  "oder", "aber", "zu", "in", "auf", "an", "bei", "mit", "von", "aus",
+  "nach", "über", "unter", "durch", "ohne", "gegen", "um", "vor", "seit",
+  "mein", "dein", "sein", "ihr", "unser", "euer",
+]
+
+# Folding these endings makes `hab` == `habe` == `haben` and `neue` == `neuen`,
+# which is dialect and inflection rather than a transcription difference.
+elision_suffixes = ["n", "e"]
+
+[transliterate]
+"ä" = "ae"
+"ö" = "oe"
+"ü" = "ue"
+"ß" = "ss"
+
+[numbers]
+joiner = "und"
+
+[numbers.units]
+null = 0
+ein = 1
+eins = 1
+eine = 1
+zwei = 2
+drei = 3
+vier = 4
+fuenf = 5
+sechs = 6
+sieben = 7
+acht = 8
+neun = 9
+
+[numbers.teens]
+zehn = 10
+elf = 11
+zwoelf = 12
+dreizehn = 13
+vierzehn = 14
+fuenfzehn = 15
+sechzehn = 16
+siebzehn = 17
+achtzehn = 18
+neunzehn = 19
+
+[numbers.tens]
+zwanzig = 20
+dreissig = 30
+vierzig = 40
+fuenfzig = 50
+sechzig = 60
+siebzig = 70
+achtzig = 80
+neunzig = 90
+
+[numbers.scale]
+hundert = 100
+tausend = 1000

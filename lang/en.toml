@@ -1,0 +1,81 @@
+# English language pack.
+
+name = "English"
+ner_model = "en_core_web_lg"
+
+notes = """
+English compounds are usually written open, which is the opposite of German and
+Norwegian. Do not carry a never_trail intuition across from those packs.
+"""
+
+function_words = [
+  "a", "an", "the", "and", "or", "but", "so", "as", "if", "than", "that",
+  "this", "these", "those", "i", "you", "he", "she", "it", "we", "they",
+  "me", "him", "her", "us", "them", "my", "your", "his", "its", "our",
+  "is", "are", "was", "were", "be", "been", "am", "has", "have", "had",
+  "do", "does", "did", "will", "would", "can", "could", "may", "might",
+  "must", "shall", "should", "not", "no", "in", "on", "at", "to", "of",
+  "for", "with", "from", "by", "about", "into", "over", "under", "after",
+  "before", "through", "just", "very", "really", "uh", "um", "ah", "oh",
+]
+
+negations = [
+  "not", "no", "never", "none", "nobody", "nothing", "neither", "nor",
+  "without", "cannot",
+]
+
+break_before = [
+  "and", "but", "or", "so", "because", "that", "which", "when", "while",
+  "if", "after", "before", "to", "for", "with", "from",
+]
+
+never_trail = [
+  "a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "at",
+  "for", "with", "from", "by", "into", "my", "your", "his", "her", "our",
+  "their", "this", "that", "these", "those",
+]
+
+elision_suffixes = []
+
+[transliterate]
+
+[numbers]
+joiner = ""
+
+[numbers.units]
+zero = 0
+one = 1
+two = 2
+three = 3
+four = 4
+five = 5
+six = 6
+seven = 7
+eight = 8
+nine = 9
+
+[numbers.teens]
+ten = 10
+eleven = 11
+twelve = 12
+thirteen = 13
+fourteen = 14
+fifteen = 15
+sixteen = 16
+seventeen = 17
+eighteen = 18
+nineteen = 19
+
+[numbers.tens]
+twenty = 20
+thirty = 30
+forty = 40
+fifty = 50
+sixty = 60
+seventy = 70
+eighty = 80
+ninety = 90
+
+[numbers.scale]
+hundred = 100
+thousand = 1000
