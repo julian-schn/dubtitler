@@ -1,6 +1,9 @@
 # English language pack.
 
 name = "English"
+# Three-letter code. Cloud engines and the MP4 subtitle language tag both
+# reject the two-letter form.
+iso3 = "eng"
 ner_model = "en_core_web_lg"
 
 notes = """

@@ -9,6 +9,9 @@
 # all root-level keys must stay above them.
 
 name = "German"
+# Three-letter code. Cloud engines and the MP4 subtitle language tag both
+# reject the two-letter form.
+iso3 = "deu"
 ner_model = "de_core_news_lg"
 
 notes = """

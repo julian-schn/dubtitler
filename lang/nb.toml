@@ -1,6 +1,9 @@
 # Norwegian Bokmål language pack.
 
 name = "Norwegian Bokmål"
+# Three-letter code. Cloud engines and the MP4 subtitle language tag both
+# reject the two-letter form.
+iso3 = "nob"
 ner_model = "nb_core_news_lg"
 
 notes = """

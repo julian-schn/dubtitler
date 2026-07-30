@@ -133,6 +133,10 @@ class Word:
     w: str
     start: float
     end: float
+    # Confidence as a probability in 0..1, never a log-probability. Engines
+    # report both conventions and they are easy to confuse, because a log
+    # probability near zero means near-certain while a probability near zero
+    # means the opposite. An engine reporting logprobs must convert here.
     prob: float | None = None
 
 

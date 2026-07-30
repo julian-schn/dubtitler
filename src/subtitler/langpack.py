@@ -30,6 +30,7 @@ from .core import LANG
 # which is noisier but never wrong.
 DEFAULTS: dict = {
     "name": "",
+    "iso3": "",
     "ner_model": "",
     "transliterate": {},
     "function_words": [],
@@ -46,6 +47,7 @@ DEFAULTS: dict = {
 class Pack:
     code: str
     name: str = ""
+    iso3: str = ""
     ner_model: str = ""
     transliterate: dict[str, str] = field(default_factory=dict)
     function_words: set[str] = field(default_factory=set)
@@ -164,6 +166,10 @@ def load(code: str) -> Pack:
     return Pack(
         code=code,
         name=data.get("name", ""),
+        # Falling back to the two-letter code is wrong but visible: an engine
+        # rejects it with a clear error rather than silently transcribing the
+        # wrong language.
+        iso3=data.get("iso3", "") or code,
         ner_model=data.get("ner_model", ""),
         transliterate=dict(data.get("transliterate", {})),
         function_words={w.casefold() for w in data.get("function_words", [])},
