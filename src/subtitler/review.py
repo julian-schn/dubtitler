@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 
 from .core import ts
+from .langpack import load as load_pack
 
 HEADER_RE = re.compile(
     r"^##\s*\[(?P<start>[\d:.,]+)\s*(?:→|->)\s*(?P<end>[\d:.,]+)\]"
@@ -21,10 +22,16 @@ HEADER_RE = re.compile(
 def render(video: str, language: str, records: list[dict]) -> str:
     """Render review records as the gate-1 markdown document.
 
+    `language` is a pack code; the display name is resolved here rather than by
+    the caller. Both callers used to pass a name, and they disagreed: the diff
+    step wrote "German" and every autosave rewrote it to "de", so the file
+    churned on a line neither of them meant to touch.
+
     Each record needs: start, end, speaker, text, flags, notes.
     """
+    name = load_pack(language).name or language
     lines = [
-        f"# {video}: {language} transcript, human review",
+        f"# {video}: {name} transcript, human review",
         "",
         "Edit the text under each timecode. Leave the `##` headers alone, they",
         "carry the timings that the corrections step re-attaches.",

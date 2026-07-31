@@ -46,6 +46,11 @@ never_trail = [
 
 # Norwegian inflection is not folded: unlike German dialect elision, an ending
 # here usually carries real grammatical information.
+# Formal address, largely archaic in Bokmål and almost never right for
+# subtitles of ordinary speech. `Dem kjenner jeg nesten ikke` is a perfectly
+# ordinary sentence, so only a mid-sentence occurrence counts.
+polite_forms = ["De", "Dem", "Deres"]
+
 abbreviations = [
   "bl.a", "f.eks", "osv", "ca", "dvs", "jf", "kr", "nr", "pga", "mfl", "mht",
   "evt", "inkl", "ekskl", "dr", "prof", "st", "vs", "iht",

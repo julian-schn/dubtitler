@@ -45,13 +45,28 @@ MAX_NOTES = 6
 SPINE_PREFERENCE = ["elevenlabs", "deepgram", "assemblyai", "whisper-local", "openai"]
 
 
+# Other things this step's own pipeline writes beside the engine transcripts,
+# in the same directory and matching the same glob.
+NOT_ENGINES = {"merged", "sentences", "cues"}
+
+
 def load_all(video: str) -> dict[str, Transcript]:
+    """Every engine transcript for this video.
+
+    Discovered by listing rather than by consulting the configured engine list,
+    so a transcript produced by an engine that has since been removed from
+    config.toml still counts as an opinion. Anything that is not shaped like a
+    transcript is skipped rather than crashing the step.
+    """
     found = {}
     for path in sorted((WORK / "stt").glob(f"{video}.*.json")):
         engine = path.name[len(video) + 1: -len(".json")]
-        if engine == "merged":
+        if engine in NOT_ENGINES:
             continue
-        found[engine] = Transcript.load(path)
+        try:
+            found[engine] = Transcript.load(path)
+        except (KeyError, TypeError, json.JSONDecodeError):
+            print(f"note: ignoring {path.name}, not a transcript", file=sys.stderr)
     return found
 
 
@@ -281,7 +296,7 @@ def run(video: str) -> list[dict]:
     merged = WORK / "stt" / f"{video}.merged.json"
     spine.save(merged)
 
-    md.write_text(render(video, pack.name or language, records), encoding="utf-8")
+    md.write_text(render(video, language, records), encoding="utf-8")
 
     data = review_dir / f"{slug(video)}.review.json"
     data.write_text(json.dumps({

@@ -149,7 +149,6 @@ Example: {{"0": "Stuttgart", "1": "andre verdenskrig"}}
         value = mapping.get(str(i))
         if isinstance(value, str) and value.strip():
             row["translation"] = value.strip()
-            row["notes"] = row.get("notes", "")
             n += 1
     print(f"proposed {n}/{len(todo)}. Review them before translating.")
     return n
@@ -175,7 +174,7 @@ def run(videos: list[str], do_propose: bool = False, provider: str | None = None
             by_term[term]["count"] = str(count)  # refresh, keep the translation
             continue
         row = {"term": term, "translation": "", "kind": kinds.get(term, ""),
-               "count": str(count)}
+               "notes": "", "count": str(count)}
         rows.append(row)
         by_term[term] = row
         added += 1

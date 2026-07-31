@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>review</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>&#127911;</text></svg>">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="#/" id="project">review</a>
+  <nav id="nav"></nav>
+  <span class="sp"></span>
+  <span id="tools"></span>
+  <span id="status" class="status">…</span>
+</div>
+
+<p class="hint" id="hint"></p>
+<main id="view"><p class="loading">loading…</p></main>
+
+<!-- One player for every view. Its src is swapped per video; the browser
+     caches each MP3 once, however many views ask for it. -->
+<audio id="player" preload="none"></audio>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

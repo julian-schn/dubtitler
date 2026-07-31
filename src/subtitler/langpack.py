@@ -41,6 +41,7 @@ DEFAULTS: dict = {
     "numbers": {"units": {}, "teens": {}, "tens": {}, "scale": {}},
     "elision_suffixes": [],
     "abbreviations": [],
+    "polite_forms": [],
     "notes": "",
 }
 
@@ -60,6 +61,7 @@ class Pack:
     numbers: dict = field(default_factory=dict)
     elision_suffixes: list[str] = field(default_factory=list)
     abbreviations: set[str] = field(default_factory=set)
+    polite_forms: list[str] = field(default_factory=list)
     notes: str = ""
 
     # ---------------------------------------------------------------- text
@@ -185,6 +187,7 @@ def load(code: str) -> Pack:
         numbers=data.get("numbers", {}),
         elision_suffixes=list(data.get("elision_suffixes", [])),
         abbreviations={w.casefold() for w in data.get("abbreviations", [])},
+        polite_forms=list(data.get("polite_forms", [])),
         notes=data.get("notes", ""),
     )
 

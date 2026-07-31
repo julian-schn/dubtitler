@@ -17,8 +17,11 @@ GLOSSARY = PROJECT / "glossary.md"
 VIDEOS_HEADER = "| Source | Title | Notes |"
 VIDEOS_KEYS = ("source", "title", "notes")
 
-GLOSSARY_HEADER = "| Term | Translation | Kind | Count |"
-GLOSSARY_KEYS = ("term", "translation", "kind", "count")
+GLOSSARY_HEADER = "| Term | Translation | Kind | Notes | Count |"
+# Kind and Notes are separate columns on purpose. The kind is machine-written
+# and refreshed on every run; the notes are the human's, and carry the approval
+# mark the review app toggles.
+GLOSSARY_KEYS = ("term", "translation", "kind", "notes", "count")
 
 VIDEOS_PREAMBLE = [
     "# Videos",
