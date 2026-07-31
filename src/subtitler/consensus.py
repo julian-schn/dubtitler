@@ -49,15 +49,41 @@ class Region:
     outvoted: bool = False          # the spine is not in that majority
 
     def note(self, pack: Pack) -> str:
-        """One line a human can act on, grouping engines by what they heard."""
+        """One line a human can act on, grouping engines by what they heard.
+
+        Readings are truncated. One engine starting late or missing a passage
+        produces a contested region tens of words long, and a note that dumps
+        all of it into the review document is worse than no note: the reader
+        skips the whole line, including the short ones around it.
+        """
         groups: dict[str, list[str]] = {}
         for engine, text in self.readings.items():
             groups.setdefault(_fold(text, pack), []).append(engine)
+
         parts = []
-        for canon, engines in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+        for _canon, engines in sorted(groups.items(), key=lambda kv: -len(kv[1])):
             sample = next(t for e, t in self.readings.items() if e in engines)
-            parts.append(f"`{sample or '(nothing)'}` ({', '.join(engines)})")
+            parts.append(f"`{_shorten(sample)}` ({', '.join(engines)})")
         return " vs ".join(parts)
+
+
+NOTE_WORDS = 8
+
+
+def _shorten(text: str) -> str:
+    """A reading as it appears in the review document.
+
+    Long readings keep both ends: the start says what the passage is, and the
+    end is where the two engines usually parted company.
+    """
+    if not text:
+        return "(nothing)"
+    words = text.split()
+    if len(words) <= NOTE_WORDS * 2:
+        return text
+    head = " ".join(words[:NOTE_WORDS])
+    tail = " ".join(words[-NOTE_WORDS:])
+    return f"{head} … [{len(words) - NOTE_WORDS * 2} more] … {tail}"
 
 
 def _fold(text: str, pack: Pack) -> str:

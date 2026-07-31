@@ -29,6 +29,9 @@ build-backend = "hatchling.build"
 # this the Makefile works only where PYTHONPATH happens to be set.
 [tool.hatch.build.targets.wheel]
 packages = ["src/subtitler"]
+# Named explicitly: without it the editable install writes an empty path file
+# and every documented command fails with ModuleNotFoundError.
+dev-mode-dirs = ["src"]
 
 [tool.uv]
 package = true

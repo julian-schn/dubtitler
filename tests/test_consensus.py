@@ -151,3 +151,24 @@ def test_note_groups_engines_by_what_they_heard(de):
     note = next(r for r in found if r.significant).note(de)
     assert "b, c" in note
     assert "Gmünd" in note and "München" in note
+
+
+def test_a_long_reading_is_shortened_in_the_note(de):
+    """An engine that starts late produces one enormous contested region. A
+    note printing all of it gets skipped, and the useful short notes around it
+    get skipped with it."""
+    spine = make("a", " ".join(f"ord{i}" for i in range(40)))
+    found = regions(spine, {"b": make("b", "ord0 ord39")}, de)
+    note = next(r for r in found if r.significant).note(de)
+    assert "more]" in note
+    assert len(note) < 300
+    # Both ends of the contested span survive: ord0 and ord39 matched, so the
+    # region runs from ord1 to ord38.
+    assert "ord1 " in note and "ord38" in note
+
+
+def test_a_short_reading_is_left_alone(de):
+    spine = make("a", "sie wohnte i München damals")
+    found = regions(spine, {"b": make("b", "sie wohnte i Gmünd damals")}, de)
+    note = next(r for r in found if r.significant).note(de)
+    assert "more]" not in note
