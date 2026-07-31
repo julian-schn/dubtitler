@@ -170,3 +170,51 @@ def test_a_narrower_limit_actually_narrows_the_output(nb):
     for chunk in cuelib.split_points(text, narrow, nb):
         lines = cuelib.wrap(chunk, narrow, nb) or cuelib.hard_wrap(chunk, narrow)
         assert all(len(ln) <= 24 for ln in lines)
+
+
+# ------------------------------------------------- corrections reach the cues
+
+def test_correcting_text_also_corrects_the_words():
+    """The words are what everything downstream reads.
+
+    Setting a segment's text without rebuilding its word list let a gate-1
+    correction reach the review document and nothing else: visible on the
+    review page, which reads the markdown, and absent from the subtitles,
+    which are built from the words. One cue of the reference job shipped
+    missing because of it.
+    """
+    from subtitler.core import Segment, Word, set_text
+
+    seg = Segment(
+        id=0, start=0.0, end=2.0, text="a Halskette",
+        words=[Word(w="a", start=0.0, end=1.0), Word(w="Halskette", start=1.0, end=2.0)],
+    )
+    assert set_text(seg, "eine goldene Halskette")
+    assert seg.text == "eine goldene Halskette"
+    assert [w.w for w in seg.words] == ["eine", "goldene", "Halskette"]
+    assert seg.words[0].start == 0.0 and seg.words[-1].end == pytest.approx(2.0)
+
+
+def test_a_same_length_correction_keeps_the_measured_timings():
+    """A one-for-one substitution leaves the timings valid, and a measured
+    timing is worth more than an estimate."""
+    from subtitler.core import Segment, Word, set_text
+
+    seg = Segment(
+        id=0, start=0.0, end=2.0, text="a Halskette",
+        words=[Word(w="a", start=0.0, end=0.4), Word(w="Halskette", start=1.3, end=2.0)],
+    )
+    assert set_text(seg, "eine Halskette")
+    assert [(w.w, w.start, w.end) for w in seg.words] == [
+        ("eine", 0.0, 0.4), ("Halskette", 1.3, 2.0)
+    ]
+
+
+def test_setting_the_same_text_changes_nothing():
+    from subtitler.core import Segment, Word, set_text
+
+    seg = Segment(id=0, start=0.0, end=1.0, text="Ja.",
+                  words=[Word(w="Ja.", start=0.0, end=1.0)])
+    assert not set_text(seg, "Ja.")
+    assert not set_text(seg, "")
+    assert seg.text == "Ja."

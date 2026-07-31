@@ -7,6 +7,7 @@ here. This module should never need to know which languages a job uses.
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import tomllib
@@ -15,7 +16,11 @@ from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+# Normally the repository this file lives in: a job is a clone, so the code and
+# the job's data share a root. SUBTITLER_ROOT points somewhere else, which is
+# how the end-to-end test drives the real steps over a fixture without writing
+# into the repository.
+ROOT = Path(os.environ.get("SUBTITLER_ROOT") or Path(__file__).resolve().parents[2])
 MEDIA = ROOT / "media"
 WORK = ROOT / "work"
 OUT = ROOT / "out"
@@ -185,6 +190,56 @@ class Transcript:
 
     def full_text(self) -> str:
         return " ".join(s.text.strip() for s in self.segments).strip()
+
+
+def respace(words: list[str], start: float, end: float) -> list[Word]:
+    """Spread words across [start, end], weighted by length.
+
+    Length is a crude proxy for duration but a monotonic one, which is all that
+    is asked of it: the cue splitter only ever wants to know which words fall
+    in the first N% of a sentence.
+    """
+    if not words:
+        return []
+    weights = [max(len(w), 1) for w in words]
+    total = sum(weights)
+    span = max(end - start, 0.001)
+    out, t = [], start
+    for w, weight in zip(words, weights):
+        duration = span * weight / total
+        out.append(Word(w=w, start=round(t, 3), end=round(t + duration, 3)))
+        t += duration
+    return out
+
+
+def set_text(seg: Segment, text: str) -> bool:
+    """Replace a segment's text and keep its word list consistent with it.
+
+    Returns True if anything changed.
+
+    Every step that accepts corrected text goes through this. Setting `text`
+    alone leaves the segment's words holding the engine's original wording, and
+    since everything downstream reads the words rather than the text, the
+    correction reaches the review document and nothing else. That failure is
+    invisible: the review page shows the corrected text because it reads the
+    markdown, while the subtitles are built from what the engine said.
+
+    Segment start and end are never touched, so cue timing stays anchored to
+    the audio however heavily the text was rewritten.
+    """
+    text = text.strip()
+    if not text or text == seg.text:
+        return False
+    new_words = text.split()
+    if len(new_words) == len(seg.words):
+        # Same word count: almost certainly a one-for-one substitution, so the
+        # measured timings are still right and are worth more than an estimate.
+        for w, nw in zip(seg.words, new_words):
+            w.w = nw
+    else:
+        seg.words = respace(new_words, seg.start, seg.end)
+    seg.text = text
+    return True
 
 
 # --------------------------------------------------------------------------

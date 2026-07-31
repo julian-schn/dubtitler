@@ -22,7 +22,7 @@ import json
 import sys
 
 from .. import consensus
-from ..core import ROOT, WORK, Transcript, cfg, slug
+from ..core import ROOT, WORK, Transcript, cfg, set_text, slug
 from ..langpack import Pack, load as load_pack
 from ..review import existing_text, render
 
@@ -291,8 +291,10 @@ def run(video: str) -> list[dict]:
 
     spine = transcripts[spine_name]
     spine.engine = f"{spine_name}+consensus"
+    # Through set_text, so that carried-over corrections reach the word list as
+    # well as the text. Everything downstream reads the words.
     for seg, rec in zip(spine.segments, records):
-        seg.text = rec["text"]
+        set_text(seg, rec["text"])
     merged = WORK / "stt" / f"{video}.merged.json"
     spine.save(merged)
 

@@ -18,7 +18,7 @@ import argparse
 import re
 import sys
 
-from ..core import ROOT, WORK, Transcript, Word, cfg, parse_ts
+from ..core import ROOT, WORK, Transcript, cfg, parse_ts, set_text
 
 HEADER = re.compile(
     r"^##\s*\[(?P<start>[\d:.,]+)\s*(?:→|->)\s*(?P<end>[\d:.,]+)\]"
@@ -53,26 +53,6 @@ def parse_review(text: str) -> list[tuple[float, float, str | None, str]]:
     return [b for b in blocks if b[3]]
 
 
-def respace(words: list[str], start: float, end: float) -> list[Word]:
-    """Spread words across [start, end], weighted by length.
-
-    Length is a crude proxy for duration but a monotonic one, which is all that
-    matters: the cue splitter only ever asks which words fall in the first N%
-    of a sentence.
-    """
-    if not words:
-        return []
-    weights = [max(len(w), 1) for w in words]
-    total = sum(weights)
-    span = max(end - start, 0.001)
-    out, t = [], start
-    for w, weight in zip(words, weights):
-        dur = span * weight / total
-        out.append(Word(w=w, start=round(t, 3), end=round(t + dur, 3), prob=None))
-        t += dur
-    return out
-
-
 def run(video: str) -> int:
     language = cfg("project", "source_lang")
     merged_path = WORK / "stt" / f"{video}.merged.json"
@@ -96,15 +76,7 @@ def run(video: str) -> int:
 
     changed = 0
     for seg, (_start, _end, speaker, text) in zip(tr.segments, blocks):
-        if text != seg.text:
-            changed += 1
-            new_words = text.split()
-            if len(new_words) == len(seg.words):
-                for w, nw in zip(seg.words, new_words):
-                    w.w = nw
-            else:
-                seg.words = respace(new_words, seg.start, seg.end)
-            seg.text = text
+        changed += set_text(seg, text)
         if speaker:
             seg.speaker = speaker
 
