@@ -31,6 +31,7 @@ from .core import LANG
 DEFAULTS: dict = {
     "name": "",
     "iso3": "",
+    "mp4_lang": "",
     "ner_model": "",
     "transliterate": {},
     "function_words": [],
@@ -49,6 +50,7 @@ class Pack:
     code: str
     name: str = ""
     iso3: str = ""
+    mp4_lang: str = ""
     ner_model: str = ""
     transliterate: dict[str, str] = field(default_factory=dict)
     function_words: set[str] = field(default_factory=set)
@@ -172,6 +174,8 @@ def load(code: str) -> Pack:
         # rejects it with a clear error rather than silently transcribing the
         # wrong language.
         iso3=data.get("iso3", "") or code,
+        # Only render uses this; it falls back to the correct code.
+        mp4_lang=data.get("mp4_lang", "") or data.get("iso3", "") or code,
         ner_model=data.get("ner_model", ""),
         transliterate=dict(data.get("transliterate", {})),
         function_words={w.casefold() for w in data.get("function_words", [])},

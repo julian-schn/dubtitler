@@ -4,6 +4,10 @@ name = "Norwegian Bokmål"
 # Three-letter code. Cloud engines and the MP4 subtitle language tag both
 # reject the two-letter form.
 iso3 = "nob"
+# The MP4 subtitle tag uses the macrolanguage code instead. "nob" is Bokmål
+# specifically and is correct, but "nor" is recognised by more players, and a
+# tag a player does not know shows up in the menu as "Unknown".
+mp4_lang = "nor"
 ner_model = "nb_core_news_lg"
 
 notes = """

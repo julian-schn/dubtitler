@@ -45,7 +45,7 @@ def config() -> dict:
         "subtitles": {
             "max_line": 42, "max_lines": 2, "max_cps": 17.0,
             "min_duration": 0.833, "max_duration": 7.0,
-            "lead_out": 1.5, "gap_frames": 2,
+            "lead_out": 1.5, "gap": 0.084,
         },
         "render": {
             "font": "Arial", "font_size": 22, "box_opacity": 0.85,
