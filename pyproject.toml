@@ -20,8 +20,18 @@ ner = ["spacy>=3.7.0"]
 [dependency-groups]
 dev = ["pytest>=8.0"]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# A src layout, installed into the job's own venv so that
+# `python -m subtitler.steps.<name>` works from anywhere in the clone. Without
+# this the Makefile works only where PYTHONPATH happens to be set.
+[tool.hatch.build.targets.wheel]
+packages = ["src/subtitler"]
+
 [tool.uv]
-package = false
+package = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
