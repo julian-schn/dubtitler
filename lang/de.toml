@@ -64,6 +64,15 @@ never_trail = [
 
 # Folding these endings makes `hab` == `habe` == `haben` and `neue` == `neuen`,
 # which is dialect and inflection rather than a transcription difference.
+# A trailing dot here is not a sentence boundary. Without this list the
+# sentence builder splits mid-clause and the translator loses the context that
+# a verb-final language needs most.
+abbreviations = [
+  "z.b", "bzw", "usw", "usf", "ca", "evtl", "ggf", "inkl", "exkl", "nr", "abs",
+  "dr", "prof", "ing", "dipl", "hr", "fr", "st", "u.a", "d.h", "vgl", "mio",
+  "mrd", "jh", "bspw", "etc", "sog",
+]
+
 elision_suffixes = ["n", "e"]
 
 [transliterate]

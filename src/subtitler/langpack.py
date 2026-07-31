@@ -39,6 +39,7 @@ DEFAULTS: dict = {
     "never_trail": [],
     "numbers": {"units": {}, "teens": {}, "tens": {}, "scale": {}},
     "elision_suffixes": [],
+    "abbreviations": [],
     "notes": "",
 }
 
@@ -56,6 +57,7 @@ class Pack:
     never_trail: set[str] = field(default_factory=set)
     numbers: dict = field(default_factory=dict)
     elision_suffixes: list[str] = field(default_factory=list)
+    abbreviations: set[str] = field(default_factory=set)
     notes: str = ""
 
     # ---------------------------------------------------------------- text
@@ -178,6 +180,7 @@ def load(code: str) -> Pack:
         never_trail={w.casefold() for w in data.get("never_trail", [])},
         numbers=data.get("numbers", {}),
         elision_suffixes=list(data.get("elision_suffixes", [])),
+        abbreviations={w.casefold() for w in data.get("abbreviations", [])},
         notes=data.get("notes", ""),
     )
 

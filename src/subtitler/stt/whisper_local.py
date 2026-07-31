@@ -40,10 +40,8 @@ class WhisperLocal(Base):
     def transcribe(self, audio: Path, language: str) -> Transcript:
         if self._backend() == "mlx":
             segments = self._mlx(audio, language)
-            model = MLX_MODEL
         else:
             segments = self._ct2(audio, language)
-            model = f"faster-whisper-{CT2_MODEL}"
         return Transcript(
             video=audio.stem, engine=self.name, language=language, segments=segments
         )

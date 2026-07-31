@@ -38,6 +38,11 @@ never_trail = [
   "their", "this", "that", "these", "those",
 ]
 
+abbreviations = [
+  "e.g", "i.e", "etc", "vs", "approx", "no", "dr", "prof", "mr", "mrs", "ms",
+  "st", "jr", "sr", "inc", "ltd", "fig", "cf", "al",
+]
+
 elision_suffixes = []
 
 [transliterate]
