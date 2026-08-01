@@ -14,10 +14,9 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
 
-from ..core import OUT, WORK, cfg, find_source, slug
+from ..core import OUT, WORK, cfg, ffmpeg, find_source, slug
 from ..langpack import load as load_pack
 from ..project import read_glossary, release_slug, title_for
 from ..review import existing_text
@@ -252,10 +251,6 @@ def audio_path(video: str) -> Path:
     # `-f mp3` is required because ffmpeg picks the muxer from the extension,
     # and the temp file deliberately does not end in .mp3 so that a killed
     # encode can never be mistaken for a finished one.
-    subprocess.run(
-        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src),
-         *AUDIO_ARGS, "-f", "mp3", str(tmp)],
-        check=True, capture_output=True,
-    )
+    ffmpeg("-i", str(src), *AUDIO_ARGS, "-f", "mp3", str(tmp))
     tmp.replace(out)  # atomic
     return out

@@ -22,26 +22,17 @@ from __future__ import annotations
 
 import argparse
 import re
-import subprocess
 import sys
 from pathlib import Path
 
-from ..core import OUT, ROOT, WORK, cfg, config, find_source
+from ..core import (
+    OUT, ROOT, WORK, FFmpegError, cfg, config, ffmpeg, ffprobe, find_source,
+)
 from ..langpack import load as load_pack
 from ..project import release_slug
 
 # The design was tuned at this height; every pixel size below scales off it.
 REFERENCE_HEIGHT = 720
-
-
-def _run(args: list[str], **kw) -> subprocess.CompletedProcess:
-    return subprocess.run(args, check=True, capture_output=True, text=True, **kw)
-
-
-def probe(path: Path, stream: str, entry: str) -> str:
-    out = _run(["ffprobe", "-v", "error", "-select_streams", stream,
-                "-show_entries", entry, "-of", "default=nw=1:nk=1", str(path)])
-    return out.stdout.strip()
 
 
 def alpha(opacity: float) -> str:
@@ -115,12 +106,11 @@ def run(video: str, lang: str | None = None, skip_burn: bool = False) -> list[Pa
 
     soft = OUT / f"{name}.{lang}.softsubs.mp4"
     print(f"muxing soft subtitles (language={iso3}) ...", flush=True)
-    _run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-          "-i", str(src), "-i", str(srt), "-c", "copy", "-c:s", "mov_text",
-          "-metadata:s:s:0", f"language={iso3}", str(soft)])
+    ffmpeg("-i", str(src), "-i", str(srt), "-c", "copy", "-c:s", "mov_text",
+           "-metadata:s:s:0", f"language={iso3}", str(soft))
     written.append(soft)
 
-    tag = probe(soft, "s:0", "stream_tags=language")
+    tag = ffprobe(soft, "stream_tags=language", stream="s:0")
     if iso3 not in tag:
         print(f"warning: subtitle language tag did not stick (got {tag!r})",
               file=sys.stderr)
@@ -128,22 +118,20 @@ def run(video: str, lang: str | None = None, skip_burn: bool = False) -> list[Pa
     if skip_burn:
         print("skipping burn-in")
     else:
-        height = int(probe(src, "v:0", "stream=height"))
+        height = int(ffprobe(src, "stream=height", stream="v:0"))
         ass = WORK / f"{video}.{lang}.ass"
         ass.parent.mkdir(parents=True, exist_ok=True)
-        _run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-              "-i", str(srt), str(ass)])
+        ffmpeg("-i", str(srt), str(ass))
         info = style_ass(ass, height)
         print(f"styling for {height}p: font={info['font_size']} "
               f"margin={info['margin']} opacity={info['opacity']:.0%}")
 
         burned = OUT / f"{name}.{lang}.burned.mp4"
         print("burning in (re-encodes the video, a minute or two) ...", flush=True)
-        _run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-              "-i", str(src), "-vf", f"ass={ass}",
-              "-c:v", "libx264", "-preset", "slow",
-              "-crf", str(config()["render"]["crf"]), "-pix_fmt", "yuv420p",
-              "-c:a", "copy", str(burned)])
+        ffmpeg("-i", str(src), "-vf", f"ass={ass}",
+               "-c:v", "libx264", "-preset", "slow",
+               "-crf", str(config()["render"]["crf"]), "-pix_fmt", "yuv420p",
+               "-c:a", "copy", str(burned))
         written.append(burned)
 
     print()
@@ -161,8 +149,8 @@ def main(argv: list[str] | None = None) -> None:
     args = ap.parse_args(argv)
     try:
         run(args.video, args.lang, args.skip_burn)
-    except subprocess.CalledProcessError as e:
-        sys.exit(f"ffmpeg failed:\n{e.stderr}")
+    except FFmpegError as e:
+        sys.exit(str(e))
 
 
 if __name__ == "__main__":

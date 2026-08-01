@@ -10,6 +10,7 @@ import json
 import os
 import re
 import subprocess
+import tempfile
 import tomllib
 import unicodedata
 from dataclasses import asdict, dataclass, field
@@ -71,6 +72,56 @@ def cfg(section: str, key: str):
 # media
 # --------------------------------------------------------------------------
 
+class FFmpegError(RuntimeError):
+    """ffmpeg or ffprobe exited non-zero, carrying what it said about it.
+
+    Exists so callers can `sys.exit(str(e))` and show the user the actual
+    complaint. Before this, one call site captured stderr and reported it, one
+    let it through to the terminal, and one swallowed it into a traceback.
+    """
+
+
+def ffmpeg(*args: str, script: str | None = None) -> subprocess.CompletedProcess:
+    """Run ffmpeg quietly, raising FFmpegError with its stderr on failure.
+
+    `script` is a filter graph. It is written to a temp file and passed as
+    `-filter_complex_script` rather than inline, so that a graph too long to
+    read in a process listing is still sitting on disk after a failure. It is
+    inserted immediately before the last argument, which every call site keeps
+    as the output path.
+    """
+    base = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
+    if script is None:
+        return _run([*base, *args])
+
+    # Deleted on the way out even if ffmpeg fails: keeping it would be more
+    # useful, but this runs per video and the graph is regenerated verbatim.
+    with tempfile.NamedTemporaryFile("w", suffix=".filter", delete=False) as fh:
+        fh.write(script)
+        path = fh.name
+    try:
+        return _run([*base, *args[:-1], "-filter_complex_script", path, args[-1]])
+    finally:
+        os.unlink(path)
+
+
+def ffprobe(path: Path | str, entry: str, stream: str | None = None) -> str:
+    """One `-show_entries` value, e.g. ffprobe(src, "format=duration")."""
+    select = ["-select_streams", stream] if stream else []
+    out = _run(["ffprobe", "-v", "error", *select, "-show_entries", entry,
+                "-of", "default=nw=1:nk=1", str(path)])
+    return out.stdout.strip()
+
+
+def _run(args: list[str]) -> subprocess.CompletedProcess:
+    try:
+        return subprocess.run(args, check=True, capture_output=True, text=True)
+    except FileNotFoundError:
+        raise FFmpegError(f"{args[0]} is not installed or not on PATH") from None
+    except subprocess.CalledProcessError as e:
+        raise FFmpegError(f"{args[0]} failed:\n{e.stderr}") from None
+
+
 def find_source(video: str) -> Path:
     """Locate media/<video>.<ext>, whatever the container extension is."""
     for ext in VIDEO_EXTS:
@@ -94,12 +145,7 @@ def media_duration(video: str) -> float | None:
     except FileNotFoundError:
         return None
     try:
-        out = subprocess.run(
-            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-             "-of", "default=nw=1:nk=1", str(src)],
-            capture_output=True, text=True, check=True,
-        )
-        return float(out.stdout.strip())
+        return float(ffprobe(src, "format=duration"))
     except Exception:
         return None
 
