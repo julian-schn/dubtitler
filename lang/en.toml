@@ -48,6 +48,9 @@ abbreviations = [
 
 elision_suffixes = []
 
+# Characters per second of ordinary speech.
+speaking_rate = 14.5
+
 [transliterate]
 
 [numbers]

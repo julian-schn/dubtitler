@@ -58,6 +58,10 @@ abbreviations = [
 
 elision_suffixes = []
 
+# Characters per second of ordinary speech. Shorter words than German, so the
+# same span of time covers fewer characters.
+speaking_rate = 13.5
+
 [transliterate]
 "æ" = "ae"
 "ø" = "oe"

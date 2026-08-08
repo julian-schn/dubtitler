@@ -79,6 +79,10 @@ abbreviations = [
 
 elision_suffixes = ["n", "e"]
 
+# Characters per second of ordinary speech. German runs long per word, so it
+# covers more characters per second than the count of syllables suggests.
+speaking_rate = 15.0
+
 [transliterate]
 "ä" = "ae"
 "ö" = "oe"

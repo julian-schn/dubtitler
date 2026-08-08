@@ -42,6 +42,12 @@ DEFAULTS: dict = {
     "elision_suffixes": [],
     "abbreviations": [],
     "polite_forms": [],
+    # Characters per second of ordinary speech, used to project how long a
+    # translation will take to say before anything is synthesised. Languages
+    # differ enough here that a shared constant is wrong for most of them:
+    # a syllable-timed language covers fewer characters per second than a
+    # stress-timed one saying the same thing.
+    "speaking_rate": 14.0,
     "notes": "",
 }
 
@@ -62,6 +68,7 @@ class Pack:
     elision_suffixes: list[str] = field(default_factory=list)
     abbreviations: set[str] = field(default_factory=set)
     polite_forms: list[str] = field(default_factory=list)
+    speaking_rate: float = 14.0
     notes: str = ""
 
     # ---------------------------------------------------------------- text
@@ -188,6 +195,9 @@ def load(code: str) -> Pack:
         elision_suffixes=list(data.get("elision_suffixes", [])),
         abbreviations={w.casefold() for w in data.get("abbreviations", [])},
         polite_forms=list(data.get("polite_forms", [])),
+        # `or` rather than a plain get: a pack written with speaking_rate = 0
+        # would otherwise divide by zero deep inside the dub fit.
+        speaking_rate=float(data.get("speaking_rate") or DEFAULTS["speaking_rate"]),
         notes=data.get("notes", ""),
     )
 
