@@ -39,3 +39,39 @@ font_size = 22         # at 720p; scaled by the source height
 box_opacity = 0.85     # opaque box behind the text, 0 for an outline instead
 margin = 40            # at 720p; scaled
 crf = 18               # x264 quality for the burned-in copy
+
+# Only consulted by `make dub`. The rest of the pipeline never reads this.
+# Keep every key at this level: a nested table here replaces the whole section
+# rather than merging into it, and the symptom is a KeyError from an unrelated
+# step.
+[dubbing]
+# "kokoro" runs locally and free, but speaks only en, es, fr, hi, it, ja, pt and
+# zh; it refuses at startup for anything else and says so. "elevenlabs" is paid
+# and covers far more, including the Nordic and German languages this was built
+# for. "rehearsal" synthesises a placeholder tone from the pack's speaking rate:
+# no key, no network, no cost, so the whole chain can be run end to end before
+# spending anything on a real voice.
+engine = "kokoro"
+voice = ""             # engine's voice id; empty means the engine's default
+voice_model = ""       # engine's model id; empty means the engine's default
+
+# Voiceover, not replacement: the original stays audible underneath, which is
+# the archival convention for testimony and keeps the original voice checkable.
+duck = 0.18            # the original's level while the dub is speaking
+duck_fade = 0.25       # seconds ramping into and out of each ducked region
+
+# How a translation that does not fit its timespan is made to fit, in the order
+# the levers are pulled: the engine's own rate control, then time-stretching,
+# then overrun into the following silence. A fourth lever, asking the model to
+# rewrite the line shorter, is deliberately not implemented yet: it puts an LLM
+# round-trip in the dub path, and nothing so far has needed it.
+tolerance = 0.05       # overshoot accepted as-is, before anything is done
+speed_max = 1.15       # ceiling on the engine's native rate control
+atempo_max = 1.10      # ceiling on time-stretch; the artefact is audible above this
+max_overrun = 1.0      # seconds a clip may run past its sentence, into silence
+guard = 0.15           # seconds kept clear before the next clip starts
+
+sample_rate = 48000
+bitrate = "192k"
+loudnorm = "I=-16:TP=-1.5:LRA=11"
+char_warn = 20000      # projected characters above which `make dub` needs --spend

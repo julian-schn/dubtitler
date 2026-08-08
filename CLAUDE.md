@@ -94,10 +94,44 @@ changes a sentence boundary. `translate --apply` keys on them, which is fine
 immediately after `sentences` and wrong after re-running it. The end-to-end
 fixture keys its translations on source text for this reason.
 
+**The dub never replaces the original, and it is timed off sentences.** The
+source stays audible under the voiceover at `dubbing.duck`. That is the archival
+convention for testimony, and it is what lets someone who speaks the source
+language check the dub against what was said; muxing the dub as the only audio
+track throws that away irreversibly. Clips are placed on sentence spans rather
+than cue spans for the same reason cues are not translated: a cue is a
+reading-speed artefact, and cutting a spoken line at one gives a voice a
+fragment no person would utter as a unit.
+
+**A voice speaks a fixed set of languages; a transcription engine does not.**
+This is the one place `tts/` diverges from `stt/`. Kokoro, the free local
+default, covers eight languages and neither German nor Norwegian is among them,
+so this repository's own reference job cannot use it. `tts.Base.speaks()`
+reports that before anything is synthesised, and `steps/dub.py` checks it
+*before* `available()`: installing a missing package cannot make an engine speak
+a language it has no voices for, so reporting the dependency first sends the
+reader to fix the wrong thing.
+
+**Dub fit levers are ordered by what they cost, and overrun is last.** Running
+into the following silence is free in audio terms and is still the last resort,
+because a clip that runs past its sentence is drifting out of sync with a
+speaker who is on camera. Stretching stops at `atempo_max` rather than doing
+whatever it takes: past that the artefact is audible, and a sentence listed in
+the run's summary for a human to shorten is better than one that ships sounding
+wrong. A fourth lever, asking the model to rewrite the line shorter, is
+deliberately not implemented — it would put an LLM round-trip in the dub path.
+
 ## Pipeline invariants
 
 - Every engine normalises into the `Transcript` schema in `core.py`. Adding one
   means a module in `stt/` that emits that shape and a line in `REGISTRY`.
+  `tts/` mirrors that shape for voices, with `speaks()` added.
+- Nothing shells out to ffmpeg directly. `core.ffmpeg` and `core.ffprobe` are
+  the only call sites, and they raise `FFmpegError` carrying stderr so a step
+  can `sys.exit(str(e))` and show the real complaint. Before they existed, one
+  caller reported stderr, one let it through to the terminal and one swallowed
+  it into a traceback. Long filter graphs go through `ffmpeg(script=...)`, which
+  writes them to a file rather than the command line.
 - `Word.prob` is a probability in 0..1, never a log-probability. Engines report
   both conventions; a log probability near zero means near-certain while a
   probability near zero means the opposite, so an engine reporting logprobs

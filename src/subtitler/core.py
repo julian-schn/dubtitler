@@ -57,6 +57,25 @@ def config() -> dict:
             "font": "Arial", "font_size": 22, "box_opacity": 0.85,
             "margin": 40, "crf": 18,
         },
+        # Flat on purpose. The merge below is one level deep, so a nested
+        # [dubbing.fit] table in config.toml would replace this whole dict and
+        # every sub-key the human did not write would raise KeyError in cfg().
+        "dubbing": {
+            "engine": "kokoro",
+            "voice": "",            # engine's voice id; "" means its default
+            "voice_model": "",      # engine's model id; "" means its default
+            "duck": 0.18,           # original's level under the dub
+            "duck_fade": 0.25,      # seconds ramping in and out of each duck
+            "tolerance": 0.05,      # overshoot tolerated before anything is done
+            "speed_max": 1.15,      # ceiling on native engine rate control
+            "atempo_max": 1.10,     # ceiling on time-stretch, audible above this
+            "max_overrun": 1.0,     # seconds a clip may run into the next silence
+            "guard": 0.15,          # seconds kept clear before the next clip
+            "sample_rate": 48000,
+            "bitrate": "192k",
+            "loudnorm": "I=-16:TP=-1.5:LRA=11",
+            "char_warn": 20000,     # projected characters above which steps.dub needs --spend
+        },
     }
     for section, values in defaults.items():
         merged = {**values, **data.get(section, {})}

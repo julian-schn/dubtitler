@@ -8,7 +8,7 @@
 
 .DEFAULT_GOAL := help
 .PHONY: help all audio transcribe diff corrections terms sentences translate \
-        resegment qc render review guidelines titles langpack check test \
+        resegment qc render dub review guidelines titles langpack check test \
         clean new-job
 
 PY  := uv run python -m subtitler.steps
@@ -35,6 +35,7 @@ help:
 	@echo "  resegment    cut the translation into cues, write the SRTs"
 	@echo "  qc           the gate before render, must pass"
 	@echo "  render       soft-muxed and burned-in video"
+	@echo "  dub          voiceover over the ducked original (DUB_ARGS=--spend)"
 	@echo "  all          audio through qc, stopping wherever a human is needed"
 	@echo ""
 	@echo "Whole job:"
@@ -87,6 +88,12 @@ render:
 	$(need_video)
 	$(PY).qc $(V)
 	$(PY).render $(V)
+
+# Deliberately not part of `all`: optional, and paid on some engines. Runs off
+# the translated sentences, so it needs `translate` but not `render`.
+dub:
+	$(need_video)
+	$(PY).dub $(V) $(DUB_ARGS)
 
 # Stops at the first step that needs something it does not have: an unreviewed
 # transcript, an unfilled glossary, an unanswered translation prompt. That is

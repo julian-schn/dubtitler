@@ -124,6 +124,45 @@ The soft-muxed file is usually the one to send. Deliverables are named from the
 title in `project/videos.md`, not from the camera filename, so retitling renames
 what the client receives and orphans nothing.
 
+## Dubbing
+
+```bash
+make dub V=IMG_2891
+```
+
+```
+out/<title>.<lang>.dub.mp4       video copied, dub over the ducked original
+out/<title>.<lang>.dub.m4a       the mix on its own
+```
+
+Voiceover, not replacement. The original stays audible underneath, which is the
+archival convention for testimony and the only way a listener who speaks the
+source language can check the dub against what was actually said.
+
+Clips are timed from the sentences, not the cues, so a spoken line arrives with
+the speech it was translated from. When a translation runs long for its
+timespan, three levers are pulled in order: the engine's own rate control, then
+time-stretching, then overrun into the following silence. Anything that still
+does not fit is listed at the end of the run for a human to shorten — the
+pipeline will not stretch past the point where it becomes audible.
+
+| engine | cost | languages |
+|---|---|---|
+| `kokoro` | free, local | en, es, fr, hi, it, ja, pt, zh |
+| `elevenlabs` | paid | ~30, including Norwegian and German |
+| `rehearsal` | free, offline | any — a placeholder tone, not speech |
+
+`kokoro` is the default and needs two model files it will tell you how to fetch.
+**It cannot speak German or Norwegian**, so the language pair this tool was built
+for needs `elevenlabs`; the step refuses at startup rather than part way through
+and says so. `rehearsal` speaks nothing at all: it emits a tone of roughly the
+right length, so the timing, ducking and muxing can be checked end to end before
+spending anything.
+
+Set the engine and voice in `config.toml` under `[dubbing]`, along with the duck
+level and the fit limits. On a paid engine, a video projected above
+`char_warn` characters needs `make dub V=… DUB_ARGS=--spend` to go ahead.
+
 ## Keeping a clone up to date
 
 ```bash
