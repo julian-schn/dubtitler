@@ -1,0 +1,57 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.os }} · py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Ubuntu across the supported range, plus one macOS job: the local
+        # Whisper backend and the audio paths differ on Apple silicon, and that
+        # is where this is actually used.
+        os: [ubuntu-latest]
+        python: ["3.11", "3.12", "3.13"]
+        include:
+          - os: macos-latest
+            python: "3.13"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # tests/test_dub.py drives the real binaries -- it builds a video,
+      # synthesises over it and mixes -- so ffmpeg is a test dependency, not an
+      # optional extra. Without it that whole file errors rather than skips.
+      - name: install ffmpeg
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y ffmpeg
+          else
+            brew install ffmpeg
+          fi
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+
+      - name: sync
+        run: uv sync
+
+      # Catches the editable-install breakage that unit tests hide: pytest adds
+      # src/ to the path itself, so the suite can pass while every documented
+      # `python -m subtitler.steps.<name>` command fails.
+      - name: the documented entry point works
+        run: uv run python -m subtitler.steps.qc --help
+
+      - name: tests
+        run: uv run pytest -q
