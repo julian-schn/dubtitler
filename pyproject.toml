@@ -1,8 +1,26 @@
 [project]
 name = "subtitler"
 version = "0.1.0"
-description = "Multi-engine transcription, AI translation and subtitle production for any language pair"
+description = "Agent-powered subtitling and dubbing: multi-engine transcription, sentence-level translation, and voiceover for any language pair"
+readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "Julian Schniepp", email = "julian@schniepp.de" }]
+keywords = ["subtitles", "dubbing", "transcription", "translation", "tts", "whisper"]
+# No licence is set on purpose: all rights reserved for now. See the status
+# section of README.md.
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: English",
+    "Natural Language :: German",
+    "Natural Language :: Norwegian",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Multimedia :: Video",
+]
 dependencies = [
     "srt>=3.5.0",
     "python-dotenv>=1.0.0",
