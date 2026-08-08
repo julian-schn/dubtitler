@@ -26,17 +26,6 @@ from ..core import ROOT, WORK, Transcript, cfg, set_text, slug
 from ..langpack import Pack, load as load_pack
 from ..review import existing_text, render
 
-# Whisper's mean log-probability over a segment. Empirically, clean speech sits
-# above -0.45; below -0.6 is where real errors start clustering.
-AVG_LOGPROB_FLOOR = -0.6
-NO_SPEECH_CEILING = 0.5
-
-# A single weak word in a twelve-word segment is normal, not a signal. Flag on
-# either a cluster of weak words or one word the engine is truly unsure of.
-WORD_PROB_FLOOR = 0.5
-WORD_PROB_ALARM = 0.35
-WEAK_WORD_CLUSTER = 2
-
 MAX_NOTES = 6
 
 # Which engine's word timings the cues are ultimately derived from. Scribe's are
@@ -121,21 +110,22 @@ def confidence_at(transcripts: dict[str, Transcript], start: float, end: float) 
                     continue
                 saw_probs = True
                 min_prob = w.prob if min_prob is None else min(min_prob, w.prob)
-                if w.prob < WORD_PROB_FLOOR:
+                if w.prob < cfg("flags", "word_prob_floor"):
                     n_weak += 1
 
         if seg_logprob is not None:
-            if seg_logprob < AVG_LOGPROB_FLOOR:
+            if seg_logprob < cfg("flags", "avg_logprob_floor"):
                 low_logprob.append(name)
             worst_logprob = (seg_logprob if worst_logprob is None
                              else min(worst_logprob, seg_logprob))
         if seg_nospeech is not None:
-            if seg_nospeech > NO_SPEECH_CEILING:
+            if seg_nospeech > cfg("flags", "no_speech_ceiling"):
                 not_speech.append(name)
             worst_nospeech = (seg_nospeech if worst_nospeech is None
                               else max(worst_nospeech, seg_nospeech))
         if saw_probs:
-            if min_prob < WORD_PROB_ALARM or n_weak >= WEAK_WORD_CLUSTER:
+            if (min_prob < cfg("flags", "word_prob_alarm")
+                    or n_weak >= cfg("flags", "weak_word_cluster")):
                 low_prob.append(name)
                 weak_total = max(weak_total, n_weak)
             worst_prob = min_prob if worst_prob is None else min(worst_prob, min_prob)

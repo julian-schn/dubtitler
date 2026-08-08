@@ -29,6 +29,15 @@ class WhisperLocal(Base):
     def _backend(self) -> str:
         return "mlx" if _on_apple_silicon() else "ct2"
 
+    def model(self) -> str:
+        """Backend-specific, because the two runtimes name models differently.
+
+        A `[models]` override applies to whichever backend the platform picks,
+        so pinning one means pinning an id that backend understands.
+        """
+        default = MLX_MODEL if self._backend() == "mlx" else CT2_MODEL
+        return super().model() or default
+
     def available(self) -> str | None:
         module = "mlx_whisper" if self._backend() == "mlx" else "faster_whisper"
         try:
@@ -56,7 +65,7 @@ class WhisperLocal(Base):
 
         result = mlx_whisper.transcribe(
             str(audio),
-            path_or_hf_repo=MLX_MODEL,
+            path_or_hf_repo=self.model(),
             language=language,
             word_timestamps=True,
             condition_on_previous_text=False,
@@ -86,7 +95,7 @@ class WhisperLocal(Base):
     def _ct2(self, audio: Path, language: str) -> list[Segment]:
         from faster_whisper import WhisperModel
 
-        model = WhisperModel(CT2_MODEL, compute_type="auto")
+        model = WhisperModel(self.model(), compute_type="auto")
         stream, _ = model.transcribe(
             str(audio),
             language=language,

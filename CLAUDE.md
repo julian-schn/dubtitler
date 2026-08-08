@@ -147,6 +147,17 @@ deliberately not implemented — it would put an LLM round-trip in the dub path.
 - Subtitle limits live in `config.toml` and nowhere else. `cues.py` enforces
   them, `steps/qc.py` verifies them, and `steps/guidelines.py` appends them to
   the translation brief rather than letting a model write them.
+- The line between `config.toml` and a module constant is whether a *job* would
+  reasonably differ. Language pair, engines, models, flag thresholds, subtitle
+  limits and dub settings are config. Sentence-splitting heuristics
+  (`stt/__init__.py`, `steps/sentences.py`), the review app's audio cache format
+  (`webui/data.py` `AUDIO_ARGS`) and prompt batch sizes are constants: changing
+  them changes what the tool *is*, not how one job is set up.
+- Every section steps read is **flat**, because the merge in `core.config()` is
+  one level deep: a nested table in `config.toml` replaces its whole section and
+  every key the human did not write disappears. `[models]` is keyed by engine
+  name for this reason rather than being a `[stt.models]` sub-table.
+  `tests/test_config.py` guards it.
 - No step overwrites a human's work silently. `steps/terms.py` preserves filled
   glossary rows, `steps/titles.py` never retitles, `steps/guidelines.py` and
   `steps/langpack_gen.py` refuse to regenerate without `--force`.

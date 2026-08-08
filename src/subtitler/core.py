@@ -47,6 +47,26 @@ def config() -> dict:
     defaults = {
         "project": {"name": "Untitled", "source_lang": "de", "target_lang": "en"},
         "stt": {"engines": ["whisper-local"], "spine": ""},
+        # Engine name -> model id. Flat, keyed by the same names as
+        # stt.engines, so it merges one level deep like everything else. An
+        # empty or absent entry means the engine's own built-in default.
+        "models": {},
+        "audio": {"loudnorm": "I=-16:TP=-1.5:LRA=11"},
+        # What makes a segment worth a human's attention at gate 1. These are
+        # the numbers behind the recall-for-precision trade described in
+        # CLAUDE.md; raising them flags less and reads faster, lowering them
+        # flags more and gets skimmed.
+        "flags": {
+            # Whisper's mean log-probability over a segment. Empirically, clean
+            # speech sits above -0.45; below -0.6 real errors start clustering.
+            "avg_logprob_floor": -0.6,
+            "no_speech_ceiling": 0.5,
+            # A single weak word in a twelve-word segment is normal, not a
+            # signal. Flag on a cluster of weak words, or one truly weak word.
+            "word_prob_floor": 0.5,
+            "word_prob_alarm": 0.35,
+            "weak_word_cluster": 2,
+        },
         "llm": {"provider": "auto", "model": "claude-opus-5"},
         "subtitles": {
             "max_line": 42, "max_lines": 2, "max_cps": 17.0,

@@ -12,14 +12,12 @@ from pathlib import Path
 from ..core import Transcript, Word
 from . import Base, group_words
 
-MODEL = "nova-3"
-
-
 class Deepgram(Base):
     name = "deepgram"
     audio = "flac"
     package = "deepgram"
     env_key = "DEEPGRAM_API_KEY"
+    default_model = "nova-3"
 
     def transcribe(self, audio: Path, language: str) -> Transcript:
         from deepgram import DeepgramClient, FileSource, PrerecordedOptions
@@ -27,7 +25,7 @@ class Deepgram(Base):
         client = DeepgramClient(self.key())
         source: FileSource = {"buffer": audio.read_bytes()}
         options = PrerecordedOptions(
-            model=MODEL,
+            model=self.model(),
             language=language,
             punctuate=True,
             diarize=True,

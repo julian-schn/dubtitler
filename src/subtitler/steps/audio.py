@@ -21,9 +21,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from ..core import ROOT, WORK, FFmpegError, ffmpeg, find_source
-
-LOUDNORM = "loudnorm=I=-16:TP=-1.5:LRA=11"
+from ..core import ROOT, WORK, FFmpegError, cfg, ffmpeg, find_source
 
 
 def extract(video: str, force: bool = False) -> dict[str, Path]:
@@ -37,8 +35,8 @@ def extract(video: str, force: bool = False) -> dict[str, Path]:
         return {"raw": raw, "wav": wav, "flac": flac}
 
     ffmpeg("-i", str(src), "-vn", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", str(raw))
-    ffmpeg("-i", str(raw), "-af", LOUDNORM, "-ar", "16000", "-ac", "1",
-           "-c:a", "pcm_s16le", str(wav))
+    ffmpeg("-i", str(raw), "-af", f"loudnorm={cfg('audio', 'loudnorm')}",
+           "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", str(wav))
     ffmpeg("-i", str(wav), "-c:a", "flac", str(flac))
 
     for p in (raw, wav, flac):

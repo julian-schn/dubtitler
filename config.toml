@@ -18,6 +18,34 @@ engines = ["whisper-local", "elevenlabs"]
 # Leave empty to use the first available one.
 spine = "elevenlabs"
 
+# Pin a speech engine to a specific model, keyed by the names used above. Each
+# engine ships a known-good default, so leave a line out unless you mean to
+# change it; the point of pinning is that a job re-run months later transcribes
+# the same way rather than following whatever a provider now calls "latest".
+[models]
+# whisper-local = "large-v3"
+# elevenlabs = "scribe_v1"
+# deepgram = "nova-3"
+# openai = "whisper-1"
+
+# Loudness normalisation applied to the audio handed to the speech engines.
+# Separate from the dubbing one below: this exists to help recognition, that one
+# to make a mix pleasant to listen to.
+[audio]
+loudnorm = "I=-16:TP=-1.5:LRA=11"
+
+# What earns a segment a flag at gate 1. Raise these and the review document
+# gets shorter and is actually read; lower them and it flags most of the video
+# and gets skimmed. Two good engines disagree on roughly 20% of tokens on
+# conversational speech, so the defaults are a deliberate trade of recall for
+# precision. See CLAUDE.md before changing them.
+[flags]
+avg_logprob_floor = -0.6   # Whisper's mean logprob; clean speech sits above -0.45
+no_speech_ceiling = 0.5    # above this the engine thinks it is not speech at all
+word_prob_floor = 0.5      # below this a word counts as weak
+word_prob_alarm = 0.35     # one word this weak flags the segment on its own
+weak_word_cluster = 2      # or this many weak words together
+
 [llm]
 # "auto" uses the API when a key is present and otherwise emits prompts for a
 # coding agent to answer. "anthropic" forces the API, "agent" forces prompts.

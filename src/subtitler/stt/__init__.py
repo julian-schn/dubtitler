@@ -53,8 +53,21 @@ class Base:
 
     name = "unnamed"
     audio = "wav"
-    package = ""   # import name of the SDK, checked by available()
-    env_key = ""   # environment variable holding the API key, if any
+    package = ""        # import name of the SDK, checked by available()
+    env_key = ""        # environment variable holding the API key, if any
+    default_model = ""  # the engine's own model id, overridable from config
+
+    def model(self) -> str:
+        """The model id to run: config's `[models]` entry, else the default.
+
+        Engines pin a known-good model rather than tracking whichever one a
+        provider currently calls "latest": a job re-run months later should
+        produce the same transcript. The config key exists so upgrading is a
+        deliberate edit rather than a code change.
+        """
+        from ..core import config
+
+        return config()["models"].get(self.name) or self.default_model
 
     def key(self) -> str | None:
         import os

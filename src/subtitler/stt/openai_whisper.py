@@ -13,14 +13,12 @@ from pathlib import Path
 from ..core import Segment, Transcript, Word
 from . import Base
 
-MODEL = "whisper-1"
-
-
 class OpenAIWhisper(Base):
     name = "openai"
     audio = "flac"
     package = "openai"
     env_key = "OPENAI_API_KEY"
+    default_model = "whisper-1"
 
     def transcribe(self, audio: Path, language: str) -> Transcript:
         from openai import OpenAI
@@ -28,7 +26,7 @@ class OpenAIWhisper(Base):
         client = OpenAI(api_key=self.key())
         with audio.open("rb") as fh:
             result = client.audio.transcriptions.create(
-                model=MODEL,
+                model=self.model(),
                 file=fh,
                 language=language,
                 response_format="verbose_json",

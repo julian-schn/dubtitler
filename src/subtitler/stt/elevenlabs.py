@@ -15,9 +15,6 @@ from ..core import Transcript, Word
 from ..langpack import load as load_pack
 from . import Base, group_words
 
-MODEL = "scribe_v1"
-
-
 def _probability(logprob) -> float | None:
     """Scribe reports a log-probability; `Word.prob` is a plain probability.
 
@@ -36,6 +33,7 @@ class ElevenLabsScribe(Base):
     audio = "flac"
     package = "elevenlabs"
     env_key = "ELEVENLABS_API_KEY"
+    default_model = "scribe_v1"
 
     def transcribe(self, audio: Path, language: str) -> Transcript:
         from elevenlabs.client import ElevenLabs
@@ -44,7 +42,7 @@ class ElevenLabsScribe(Base):
         with audio.open("rb") as fh:
             result = client.speech_to_text.convert(
                 file=fh,
-                model_id=MODEL,
+                model_id=self.model(),
                 language_code=load_pack(language).iso3,
                 diarize=True,
                 # We want speech, not "(laughter)" markers, which would end up
