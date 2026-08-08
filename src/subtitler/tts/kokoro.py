@@ -15,15 +15,29 @@ them and prints the two commands that fetch them.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
-from ..core import ROOT, cfg
+from ..core import cfg
 from . import Base
 
-MODELS = ROOT / "models"
 MODEL_FILE = "kokoro-v1.0.onnx"
 VOICES_FILE = "voices-v1.0.bin"
 RELEASE = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0"
+
+
+def models_dir() -> Path:
+    """Where the two model files live.
+
+    Deliberately *not* under the job root. This repository is cloned once per
+    job, and 340 MB fetched again for every clone is the kind of default that
+    makes people switch the feature off. One copy per machine, shared by every
+    job, overridable with SUBTITLER_MODELS for a pinned or air-gapped setup.
+    """
+    if env := os.environ.get("SUBTITLER_MODELS"):
+        return Path(env)
+    cache = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
+    return Path(cache) / "subtitler" / "models"
 
 # Pack code -> the language string kokoro-onnx expects. The two are close but
 # not identical, and passing a pack code straight through yields silence rather
@@ -64,7 +78,7 @@ class Kokoro(Base):
     def _paths(self) -> tuple[Path, Path]:
         """Where the two model files live. `voice_model` overrides the onnx."""
         override = cfg("dubbing", "voice_model")
-        model = Path(override) if override else MODELS / MODEL_FILE
+        model = Path(override) if override else models_dir() / MODEL_FILE
         return model, model.parent / VOICES_FILE
 
     def available(self) -> str | None:
@@ -74,11 +88,13 @@ class Kokoro(Base):
         absent = [p for p in (model, voices) if not p.exists()]
         if absent:
             names = ", ".join(p.name for p in absent)
+            where = model.parent
             return (
                 f"kokoro model files are missing ({names})\n"
-                f"  mkdir -p {MODELS.relative_to(ROOT)} && cd {MODELS.relative_to(ROOT)}\n"
+                f"  mkdir -p {where} && cd {where}\n"
                 f"  curl -LO {RELEASE}/{MODEL_FILE}\n"
-                f"  curl -LO {RELEASE}/{VOICES_FILE}"
+                f"  curl -LO {RELEASE}/{VOICES_FILE}\n"
+                f"  (set SUBTITLER_MODELS to keep them somewhere else)"
             )
         return None
 

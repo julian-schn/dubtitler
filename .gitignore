@@ -6,8 +6,8 @@ out/*
 !work/.gitkeep
 !out/.gitkeep
 
-# Downloaded TTS weights, a few hundred MB. src/subtitler/tts/kokoro.py prints
-# the two commands that fetch them.
+# Downloaded TTS weights. They live in ~/.cache/subtitler/models by default so
+# that clones share one copy; this covers a job-local SUBTITLER_MODELS instead.
 models/
 
 .env

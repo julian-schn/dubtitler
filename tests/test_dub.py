@@ -192,6 +192,23 @@ def test_an_unknown_engine_names_the_known_ones():
         tts.get("nope")
 
 
+def test_kokoro_models_live_outside_the_job(monkeypatch):
+    """340 MB must not be re-fetched for every clone.
+
+    This repo is cloned per job, so resolving the model directory against the
+    job root meant a fresh download each time — and the failure looked like a
+    missing-file error rather than a design mistake.
+    """
+    from subtitler.core import ROOT
+    from subtitler.tts.kokoro import models_dir
+
+    monkeypatch.delenv("SUBTITLER_MODELS", raising=False)
+    assert ROOT not in models_dir().parents
+
+    monkeypatch.setenv("SUBTITLER_MODELS", "/somewhere/shared")
+    assert models_dir() == Path("/somewhere/shared")
+
+
 # --------------------------------------------------------------------------
 # the graph
 # --------------------------------------------------------------------------
