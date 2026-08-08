@@ -6,6 +6,10 @@ out/*
 !work/.gitkeep
 !out/.gitkeep
 
+# Downloaded TTS weights, a few hundred MB. src/subtitler/tts/kokoro.py prints
+# the two commands that fetch them.
+models/
+
 .env
 .venv/
 __pycache__/
