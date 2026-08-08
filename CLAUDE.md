@@ -22,8 +22,8 @@ languages; cue boundaries still land on the audio.
 **Correcting a segment's text must also rebuild its word list.** Everything
 downstream reads `Segment.words`, not `Segment.text`. Assigning to `.text` alone
 lets a gate-1 correction reach the review page, which renders the markdown, and
-never reach the subtitles, which are built from the words. One cue of the
-reference job shipped missing for exactly this reason. Go through
+never reach the subtitles, which are built from the words. A delivered job once
+shipped with a cue missing for exactly this reason. Go through
 `core.set_text`, which both `steps/diff.py` and `steps/corrections.py` use.
 
 **Confidence flags are filtered on purpose, don't simplify them back.** Two good
@@ -91,8 +91,8 @@ Retitling therefore renames deliverables and nothing else.
 
 **Sentence ids are positions, not identities.** They shift whenever a correction
 changes a sentence boundary. `translate --apply` keys on them, which is fine
-immediately after `sentences` and wrong after re-running it. The end-to-end
-fixture keys its translations on source text for this reason.
+immediately after `sentences` and wrong after re-running it. Anything storing
+translations across a re-run should key them on source text, not on ids.
 
 **The dub never replaces the original, and it is timed off sentences.** The
 source stays audible under the voiceover at `dubbing.duck`. That is the archival
@@ -106,7 +106,7 @@ fragment no person would utter as a unit.
 **A voice speaks a fixed set of languages; a transcription engine does not.**
 This is the one place `tts/` diverges from `stt/`. Kokoro, the free local
 default, covers eight languages and neither German nor Norwegian is among them,
-so this repository's own reference job cannot use it. `tts.Base.speaks()`
+so the `de -> nb` pair this ships configured for cannot use it. `tts.Base.speaks()`
 reports that before anything is synthesised, and `steps/dub.py` checks it
 *before* `available()`: installing a missing package cannot make an engine speak
 a language it has no voices for, so reporting the dependency first sends the

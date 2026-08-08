@@ -6,7 +6,7 @@ Reads work/stt/<video>.sentences.json, which `translate` filled in, and writes
 one SRT per language plus work/stt/<video>.cues.json for the review page and QC.
 
 Deliverables are named after the video's title, not its camera filename, so a
-client receives `interview-with-a-neighbour.no.srt`. Everything under work/
+client receives `interview-with-a-neighbour.nb.srt`. Everything under work/
 keeps the source-derived slug: retitling renames what is delivered and orphans
 nothing.
 """

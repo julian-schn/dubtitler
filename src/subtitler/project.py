@@ -27,7 +27,7 @@ VIDEOS_PREAMBLE = [
     "# Videos",
     "",
     "The title names the deliverables in `out/`, so a client receives",
-    "`interview-with-a-neighbour.no.srt` rather than a camera filename.",
+    "`interview-with-a-neighbour.nb.srt` rather than a camera filename.",
     "Retitling renames deliverables and nothing else; work in progress is keyed",
     "on the source filename and is never affected.",
     "",

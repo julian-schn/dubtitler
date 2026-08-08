@@ -2,9 +2,9 @@
 # The steps are the interface; this file exists so the common ones are one word
 # and so the order is written down somewhere.
 #
-#   make all V=IMG_2891     everything up to the subtitles, stopping at the gates
+#   make all V=IMG_1234     everything up to the subtitles, stopping at the gates
 #   make review             open the review app, both gates live here
-#   make check              the end-to-end test over the reference job
+#   make check              the end-to-end test: synthesis through to a muxed file
 
 .DEFAULT_GOAL := help
 .PHONY: help all audio transcribe diff corrections terms sentences translate \
@@ -18,7 +18,7 @@ PORT ?= 8731
 # Steps that act on one video refuse to guess which one.
 define need_video
 	@if [ -z "$(V)" ]; then \
-		echo "this target needs a video: make $@ V=IMG_2891"; \
+		echo "this target needs a video: make $@ V=IMG_1234"; \
 		echo "(the basename of the file in media/, without its extension)"; \
 		exit 1; \
 	fi
@@ -47,7 +47,7 @@ help:
 	@echo ""
 	@echo "Development:"
 	@echo "  test         the full suite"
-	@echo "  check        the end-to-end test over the reference job"
+	@echo "  check        the end-to-end test, real ffmpeg through to a muxed file"
 	@echo "  new-job      strip this clone back to a blank job"
 
 # ---------------------------------------------------------------- per video
@@ -133,8 +133,11 @@ langpack:
 test:
 	uv run pytest -q
 
+# The only test that runs the real binaries end to end: it builds a video,
+# synthesises over it and mixes, so it catches ffmpeg and filter-graph breakage
+# that the unit tests cannot see.
 check:
-	uv run pytest tests/test_end_to_end.py -q
+	uv run pytest tests/test_dub.py -q
 
 clean:
 	rm -rf work/review/audio

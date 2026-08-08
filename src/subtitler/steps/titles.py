@@ -3,7 +3,7 @@
     python -m subtitler.steps.titles [<video> ...]
 
 Titles name the deliverables in out/, so the client receives a descriptive
-filename rather than IMG_2891. They live in project/videos.md.
+filename rather than IMG_1234. They live in project/videos.md.
 
 An existing title is never overwritten. It was either written by a human or
 already refined, and in both cases it is better than anything this step would
