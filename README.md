@@ -66,6 +66,16 @@ arrives with the speech it was translated from.
 
 ## Getting started
 
+You need **Python 3.11 or newer**, [uv](https://docs.astral.sh/uv/), and
+**ffmpeg on `PATH`**. ffmpeg is not optional: it extracts the audio, burns the
+subtitles, synthesises the dub and feeds the review player, so the first step of
+the pipeline fails without it.
+
+```bash
+brew install ffmpeg        # macOS
+sudo apt install ffmpeg    # Debian/Ubuntu
+```
+
 ```bash
 git clone <this repo> my-job && cd my-job
 make new-job                    # clear the previous job's data
@@ -209,6 +219,11 @@ make check    # the end-to-end run: synthesis through to a muxed file
 `make check` runs `tests/test_dub.py`, the only test that drives the real
 binaries: it builds a video, synthesises over it, ducks, mixes and muxes. It
 needs `ffmpeg` on `PATH` and nothing else — no key, no model, no network.
+
+CI runs the whole suite on Ubuntu across 3.11 to 3.13 and on macOS, and also
+runs one documented `python -m subtitler.steps.<name>` command. That last check
+exists because pytest puts `src/` on the path itself, so the suite can pass
+while every command in this README fails on a broken editable install.
 
 ## Keeping a clone up to date
 
