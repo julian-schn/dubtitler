@@ -158,9 +158,10 @@ make dub V=IMG_1234
 
 `kokoro` is the default. It downloads two model files once into
 `~/.cache/subtitler/models`, shared by every clone, and prints the commands if
-they are missing. **It cannot speak German or Norwegian**, so the pair this ships
-configured for needs `elevenlabs`; the step refuses at startup rather than part
-way through, and names the alternatives. `rehearsal` speaks nothing at all: it
+they are missing. It handles the `de → en` pair this ships configured for.
+**It cannot speak German or Norwegian**, though, so a job targeting either needs
+`elevenlabs`; the step refuses at startup rather than part way through, and
+names the alternatives. `rehearsal` speaks nothing at all: it
 emits a tone of roughly the right length, so timing, ducking and muxing can be
 checked end to end before spending anything.
 

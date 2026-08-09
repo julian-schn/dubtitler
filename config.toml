@@ -49,7 +49,7 @@ weak_word_cluster = 2      # or this many weak words together
 [llm]
 # "auto" uses the API when a key is present and otherwise emits prompts for a
 # coding agent to answer. "anthropic" forces the API, "agent" forces prompts.
-provider = "agent"
+provider = "auto"
 model = "claude-opus-5"
 
 [subtitles]

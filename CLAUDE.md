@@ -106,7 +106,9 @@ fragment no person would utter as a unit.
 **A voice speaks a fixed set of languages; a transcription engine does not.**
 This is the one place `tts/` diverges from `stt/`. Kokoro, the free local
 default, covers eight languages and neither German nor Norwegian is among them,
-so the `de -> nb` pair this ships configured for cannot use it. `tts.Base.speaks()`
+so a job targeting either has to use ElevenLabs however the rest is configured —
+the tool was built for `de -> nb`, which Kokoro cannot serve at all.
+`tts.Base.speaks()`
 reports that before anything is synthesised, and `steps/dub.py` checks it
 *before* `available()`: installing a missing package cannot make an engine speak
 a language it has no voices for, so reporting the dependency first sends the
