@@ -1,0 +1,22 @@
+#!/bin/sh
+# Secret scan over the staged diff. Enable it in a clone with `make hooks`,
+# which points core.hooksPath at this directory.
+#
+# Same .gitleaks.toml as the CI workflow, so a commit that passes here passes
+# there. CI is the gate that cannot be skipped; this one just moves the finding
+# to before the key is in the history, where removing it is one `git reset`
+# rather than a rewrite and a key rotation.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+	echo "pre-commit: gitleaks not installed, skipping the secret scan." >&2
+	echo "            brew install gitleaks   (CI scans regardless)" >&2
+	exit 0
+fi
+
+gitleaks git --pre-commit --staged --redact --verbose --config .gitleaks.toml || {
+	echo >&2
+	echo "pre-commit: gitleaks found a secret in the staged changes (above)." >&2
+	echo "            Unstage it, or commit with --no-verify if it is a false" >&2
+	echo "            positive -- and add it to .gitleaks.toml if so." >&2
+	exit 1
+}

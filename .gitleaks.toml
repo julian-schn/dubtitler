@@ -1,0 +1,23 @@
+# Secret scanning. Shared by the CI workflow and the local pre-commit hook so
+# that a commit which passes locally passes in CI.
+#
+# The one thing this repo actually has to protect is .env: every LLM and cloud
+# speech engine reads its key from there, and a clone-per-job workflow means
+# there are many .env files and many chances for one to be added by hand.
+
+[extend]
+# gitleaks' own rule set is the substance of this; the sections below only
+# adjust it for how this repo is laid out.
+useDefault = true
+
+[allowlist]
+description = "paths that legitimately hold key-shaped strings"
+paths = [
+  # The template. Every value in it is empty, but it exists to be full of key
+  # names, and a future example value would read as a leak.
+  '''^\.env\.example$''',
+  '''^uv\.lock$''',
+  # Job data. Gitignored, so this only matters for a `gitleaks dir` scan of a
+  # working tree that has run a job.
+  '''^(media|work|out)/''',
+]

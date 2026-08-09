@@ -9,7 +9,7 @@
 .DEFAULT_GOAL := help
 .PHONY: help all audio transcribe diff corrections terms sentences translate \
         resegment qc render dub review guidelines titles langpack check test \
-        clean new-job
+        clean new-job hooks secrets
 
 PY  := uv run python -m dubtitler.steps
 V   ?=
@@ -48,6 +48,8 @@ help:
 	@echo "Development:"
 	@echo "  test         the full suite"
 	@echo "  check        the end-to-end test, real ffmpeg through to a muxed file"
+	@echo "  hooks        install the pre-commit secret scan in this clone"
+	@echo "  secrets      scan the history for secrets, as CI does"
 	@echo "  new-job      strip this clone back to a blank job"
 
 # ---------------------------------------------------------------- per video
@@ -138,6 +140,15 @@ test:
 # that the unit tests cannot see.
 check:
 	uv run pytest tests/test_dub.py -q
+
+# Per clone, and not automatic: git will not run a hook out of a fresh clone
+# without being told to, which is the point of hooks being opt-in.
+hooks:
+	git config core.hooksPath .githooks
+	@echo "pre-commit secret scan enabled (git config --unset core.hooksPath to undo)"
+
+secrets:
+	gitleaks git . --config .gitleaks.toml --redact --verbose
 
 clean:
 	rm -rf work/review/audio

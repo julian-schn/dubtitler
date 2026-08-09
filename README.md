@@ -226,6 +226,27 @@ runs one documented `python -m dubtitler.steps.<name>` command. That last check
 exists because pytest puts `src/` on the path itself, so the suite can pass
 while every command in this README fails on a broken editable install.
 
+## Secrets
+
+Every key lives in `.env`, which is gitignored. CI scans the full history with
+[gitleaks](https://github.com/gitleaks/gitleaks) on every push and pull request,
+so a key that reaches GitHub fails the build whether or not it was removed
+again.
+
+The same scan runs locally as a pre-commit hook, which is opt-in per clone:
+
+```bash
+brew install gitleaks   # or any install from the gitleaks releases page
+make hooks              # points core.hooksPath at .githooks/
+make secrets            # scan the history by hand, as CI does
+```
+
+Without `gitleaks` on `PATH` the hook skips rather than failing, so a clone that
+never installed it still commits. CI is the gate that cannot be skipped; the
+hook only moves a finding to before the key is in the history, where undoing it
+is a `git reset` rather than a rewrite and a rotation. Both read
+`.gitleaks.toml`, so they agree.
+
 ## Keeping a clone up to date
 
 ```bash

@@ -1,0 +1,36 @@
+name: gitleaks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: scan for secrets
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: a key that was committed and then removed in a later
+      # commit is still a leaked key, and a shallow clone cannot see it.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # The binary rather than gitleaks-action, which asks organisation-owned
+      # repositories for a licence key. Pinned so a scan does not start failing
+      # on a rule change nobody here made.
+      - name: install gitleaks
+        env:
+          VERSION: 8.30.1
+        run: |
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: scan history
+        run: gitleaks git . --config .gitleaks.toml --redact --verbose
