@@ -8,9 +8,9 @@ keeps the queue short enough to be worked through at all.
 
 import pytest
 
-from subtitler import consensus
-from subtitler.core import Segment, Transcript, Word
-from subtitler.langpack import load as load_pack
+from dubtitler import consensus
+from dubtitler.core import Segment, Transcript, Word
+from dubtitler.langpack import load as load_pack
 
 
 def make(engine: str, text: str) -> Transcript:

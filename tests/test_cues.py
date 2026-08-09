@@ -8,9 +8,9 @@ and another review pass.
 
 import pytest
 
-from subtitler import cues as cuelib
-from subtitler.cues import Limits
-from subtitler.langpack import load as load_pack
+from dubtitler import cues as cuelib
+from dubtitler.cues import Limits
+from dubtitler.langpack import load as load_pack
 
 
 @pytest.fixture
@@ -183,7 +183,7 @@ def test_correcting_text_also_corrects_the_words():
     which are built from the words. One cue of the reference job shipped
     missing because of it.
     """
-    from subtitler.core import Segment, Word, set_text
+    from dubtitler.core import Segment, Word, set_text
 
     seg = Segment(
         id=0, start=0.0, end=2.0, text="a Halskette",
@@ -198,7 +198,7 @@ def test_correcting_text_also_corrects_the_words():
 def test_a_same_length_correction_keeps_the_measured_timings():
     """A one-for-one substitution leaves the timings valid, and a measured
     timing is worth more than an estimate."""
-    from subtitler.core import Segment, Word, set_text
+    from dubtitler.core import Segment, Word, set_text
 
     seg = Segment(
         id=0, start=0.0, end=2.0, text="a Halskette",
@@ -211,7 +211,7 @@ def test_a_same_length_correction_keeps_the_measured_timings():
 
 
 def test_setting_the_same_text_changes_nothing():
-    from subtitler.core import Segment, Word, set_text
+    from dubtitler.core import Segment, Word, set_text
 
     seg = Segment(id=0, start=0.0, end=1.0, text="Ja.",
                   words=[Word(w="Ja.", start=0.0, end=1.0)])

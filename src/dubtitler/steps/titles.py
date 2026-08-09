@@ -1,6 +1,6 @@
 """Give each video a human-readable name, derived from what is in it.
 
-    python -m subtitler.steps.titles [<video> ...]
+    python -m dubtitler.steps.titles [<video> ...]
 
 Titles name the deliverables in out/, so the client receives a descriptive
 filename rather than IMG_1234. They live in project/videos.md.

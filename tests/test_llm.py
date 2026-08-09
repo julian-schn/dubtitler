@@ -9,8 +9,8 @@ import json
 
 import pytest
 
-from subtitler import llm
-from subtitler.llm.agent import AgentLLM
+from dubtitler import llm
+from dubtitler.llm.agent import AgentLLM
 
 
 # ---------------------------------------------------------------- parsing
@@ -40,8 +40,8 @@ def test_translations_containing_braces_are_not_truncated():
 # ---------------------------------------------------------------- agent path
 
 def test_agent_writes_the_prompt_and_stops(tmp_path, monkeypatch):
-    monkeypatch.setattr("subtitler.core.WORK", tmp_path)
-    monkeypatch.setattr("subtitler.llm.agent.WORK", tmp_path)
+    monkeypatch.setattr("dubtitler.core.WORK", tmp_path)
+    monkeypatch.setattr("dubtitler.llm.agent.WORK", tmp_path)
 
     engine = AgentLLM()
     with pytest.raises(llm.NeedsAgent) as excinfo:
@@ -53,7 +53,7 @@ def test_agent_writes_the_prompt_and_stops(tmp_path, monkeypatch):
 
 
 def test_agent_resumes_once_the_answer_exists(tmp_path, monkeypatch):
-    monkeypatch.setattr("subtitler.llm.agent.WORK", tmp_path)
+    monkeypatch.setattr("dubtitler.llm.agent.WORK", tmp_path)
     engine = AgentLLM()
 
     with pytest.raises(llm.NeedsAgent) as excinfo:
@@ -65,7 +65,7 @@ def test_agent_resumes_once_the_answer_exists(tmp_path, monkeypatch):
 
 def test_an_empty_answer_file_does_not_count_as_answered(tmp_path, monkeypatch):
     """Otherwise a stray touch of the file silently skips the work."""
-    monkeypatch.setattr("subtitler.llm.agent.WORK", tmp_path)
+    monkeypatch.setattr("dubtitler.llm.agent.WORK", tmp_path)
     engine = AgentLLM()
     prompt_path, answer_path = engine.paths("job.translate")
     answer_path.parent.mkdir(parents=True, exist_ok=True)
@@ -78,7 +78,7 @@ def test_an_empty_answer_file_does_not_count_as_answered(tmp_path, monkeypatch):
 def test_the_prompt_is_refreshed_so_an_answer_never_pairs_with_a_stale_brief(
     tmp_path, monkeypatch
 ):
-    monkeypatch.setattr("subtitler.llm.agent.WORK", tmp_path)
+    monkeypatch.setattr("dubtitler.llm.agent.WORK", tmp_path)
     engine = AgentLLM()
 
     with pytest.raises(llm.NeedsAgent):
@@ -92,12 +92,12 @@ def test_the_prompt_is_refreshed_so_an_answer_never_pairs_with_a_stale_brief(
 # ---------------------------------------------------------------- selection
 
 def test_auto_picks_the_agent_when_there_is_no_key(monkeypatch):
-    monkeypatch.setattr("subtitler.llm.has_api_key", lambda: False)
+    monkeypatch.setattr("dubtitler.llm.has_api_key", lambda: False)
     assert llm.get("auto").name == "agent"
 
 
 def test_auto_picks_the_api_when_a_key_is_present(monkeypatch):
-    monkeypatch.setattr("subtitler.llm.has_api_key", lambda: True)
+    monkeypatch.setattr("dubtitler.llm.has_api_key", lambda: True)
     assert llm.get("auto").name == "anthropic"
 
 

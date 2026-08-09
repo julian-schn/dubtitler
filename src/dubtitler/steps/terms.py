@@ -1,6 +1,6 @@
 """Collect glossary candidates from the corrected transcripts.
 
-    python -m subtitler.steps.terms [<video> ...] [--propose]
+    python -m dubtitler.steps.terms [<video> ...] [--propose]
 
 Appends candidates to project/glossary.md without disturbing rows anyone has
 already filled in, so it is safe to re-run when another video arrives. Counts

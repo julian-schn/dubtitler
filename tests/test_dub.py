@@ -5,9 +5,9 @@ parts that fail silently — a clip that drifts or an original that never ducks
 both produce a file that plays perfectly and is wrong — so they get exercised
 directly rather than through the output.
 
-The end-to-end case builds its own twelve-second video rather than using the
-reference job, which ships no media. It runs the `rehearsal` voice, so it needs
-no model, no key and no network.
+The end-to-end case builds its own twelve-second video, so the suite carries no
+media of its own. It runs the `rehearsal` voice, so it needs no model, no key
+and no network.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pytest
 
-from subtitler.steps.dub import (
+from dubtitler.steps.dub import (
     Fit, duck_expr, graph, headroom, speed_for, stretch_for,
 )
 
@@ -159,12 +159,12 @@ def test_a_zero_fade_does_not_divide_by_zero():
 # --------------------------------------------------------------------------
 
 def test_kokoro_refuses_a_language_it_cannot_speak():
-    """The reference job is de -> nb, which Kokoro does not cover.
+    """Kokoro covers eight languages and Norwegian is not one of them.
 
     The message has to name the way out: whoever hits this is usually starting
     their first job in a new language pair.
     """
-    from subtitler import tts
+    from dubtitler import tts
 
     problem = tts.get("kokoro").speaks("nb")
     assert problem is not None
@@ -173,20 +173,20 @@ def test_kokoro_refuses_a_language_it_cannot_speak():
 
 
 def test_kokoro_accepts_a_language_it_does_speak():
-    from subtitler import tts
+    from dubtitler import tts
 
     assert tts.get("kokoro").speaks("en") is None
 
 
 def test_rehearsal_and_elevenlabs_speak_anything():
-    from subtitler import tts
+    from dubtitler import tts
 
     assert tts.get("rehearsal").speaks("nb") is None
     assert tts.get("elevenlabs").speaks("nb") is None
 
 
 def test_an_unknown_engine_names_the_known_ones():
-    from subtitler import tts
+    from dubtitler import tts
 
     with pytest.raises(KeyError, match="kokoro"):
         tts.get("nope")
@@ -199,13 +199,13 @@ def test_kokoro_models_live_outside_the_job(monkeypatch):
     job root meant a fresh download each time — and the failure looked like a
     missing-file error rather than a design mistake.
     """
-    from subtitler.core import ROOT
-    from subtitler.tts.kokoro import models_dir
+    from dubtitler.core import ROOT
+    from dubtitler.tts.kokoro import models_dir
 
-    monkeypatch.delenv("SUBTITLER_MODELS", raising=False)
+    monkeypatch.delenv("DUBTITLER_MODELS", raising=False)
     assert ROOT not in models_dir().parents
 
-    monkeypatch.setenv("SUBTITLER_MODELS", "/somewhere/shared")
+    monkeypatch.setenv("DUBTITLER_MODELS", "/somewhere/shared")
     assert models_dir() == Path("/somewhere/shared")
 
 
@@ -219,7 +219,7 @@ def test_the_graph_sums_rather_than_averages():
     That is the ducking done by accident and in the wrong direction, and it gets
     quieter the more the person talks.
     """
-    from subtitler.steps.dub import Clip
+    from dubtitler.steps.dub import Clip
 
     clips = [Clip(id=0, start=1.0, path=Path("a.wav"), duration=2.0,
                   atempo=1.0, overrun=0.0, fits=True)]
@@ -277,12 +277,12 @@ def dubjob(tmp_path: Path):
         check=True, capture_output=True,
     )
 
-    env = {**os.environ, "SUBTITLER_ROOT": str(root),
+    env = {**os.environ, "DUBTITLER_ROOT": str(root),
            "PYTHONPATH": str(REPO / "src")}
 
     def dub(*args: str) -> subprocess.CompletedProcess:
         result = subprocess.run(
-            [sys.executable, "-m", "subtitler.steps.dub", "CLIP", *args],
+            [sys.executable, "-m", "dubtitler.steps.dub", "CLIP", *args],
             env=env, capture_output=True, text=True, cwd=REPO,
         )
         if result.returncode != 0:
@@ -310,7 +310,7 @@ def test_rehearsal_produces_both_deliverables(dubjob):
 
 def test_the_dub_keeps_the_video_and_the_full_duration(dubjob):
     """The picture is copied, not re-encoded, and the dub covers the source."""
-    from subtitler.core import ffprobe
+    from dubtitler.core import ffprobe
 
     dubjob.dub()
     video = dubjob.root / "out" / "CLIP.nb.dub.mp4"

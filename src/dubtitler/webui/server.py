@@ -149,7 +149,7 @@ def save_titles(payload: dict) -> str:
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "subtitler-review"
+    server_version = "dubtitler-review"
 
     def _send(self, code: int, body: bytes, ctype: str, extra: dict | None = None):
         self.send_response(code)

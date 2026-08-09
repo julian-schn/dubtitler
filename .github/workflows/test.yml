@@ -49,9 +49,9 @@ jobs:
 
       # Catches the editable-install breakage that unit tests hide: pytest adds
       # src/ to the path itself, so the suite can pass while every documented
-      # `python -m subtitler.steps.<name>` command fails.
+      # `python -m dubtitler.steps.<name>` command fails.
       - name: the documented entry point works
-        run: uv run python -m subtitler.steps.qc --help
+        run: uv run python -m dubtitler.steps.qc --help
 
       - name: tests
         run: uv run pytest -q

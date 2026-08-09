@@ -8,8 +8,8 @@ struggled, so it counts on its own.
 
 import pytest
 
-from subtitler.core import Segment, Transcript, Word
-from subtitler.steps.diff import confidence_at, pick_spine
+from dubtitler.core import Segment, Transcript, Word
+from dubtitler.steps.diff import confidence_at, pick_spine
 
 
 def transcript(engine: str, *, logprob=None, probs=None, nospeech=None) -> Transcript:

@@ -18,10 +18,10 @@ from functools import lru_cache
 from pathlib import Path
 
 # Normally the repository this file lives in: a job is a clone, so the code and
-# the job's data share a root. SUBTITLER_ROOT points somewhere else, which is
+# the job's data share a root. DUBTITLER_ROOT points somewhere else, which is
 # how the end-to-end test drives the real steps over a fixture without writing
 # into the repository.
-ROOT = Path(os.environ.get("SUBTITLER_ROOT") or Path(__file__).resolve().parents[2])
+ROOT = Path(os.environ.get("DUBTITLER_ROOT") or Path(__file__).resolve().parents[2])
 MEDIA = ROOT / "media"
 WORK = ROOT / "work"
 OUT = ROOT / "out"

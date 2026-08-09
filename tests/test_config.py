@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from subtitler import core, stt
+from dubtitler import core, stt
 
 
 @pytest.fixture

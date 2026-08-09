@@ -1,6 +1,6 @@
 """Translate the sentences into the target language.
 
-    python -m subtitler.steps.translate <video>
+    python -m dubtitler.steps.translate <video>
 
 Whole sentences go in, whole sentences come out. Cue splitting happens
 afterwards in `resegment`; see the header of `sentences.py` for why translating

@@ -1,6 +1,6 @@
 """Serve the review app.
 
-    python -m subtitler.steps.review [--port 8731] [--no-browser]
+    python -m dubtitler.steps.review [--port 8731] [--no-browser]
 
 Both human gates live here: the transcript gate, where engine disagreements are
 settled against the audio, and the translation gate, where the source and its

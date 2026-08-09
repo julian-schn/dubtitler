@@ -1,6 +1,6 @@
 """Produce the video deliverables from the finished SRT.
 
-    python -m subtitler.steps.render <video> [--lang nb] [--skip-burn]
+    python -m dubtitler.steps.render <video> [--lang nb] [--skip-burn]
 
 Three artifacts, in increasing order of how much they cost:
 

@@ -1,6 +1,6 @@
 """Write the translation brief for this job's language pair.
 
-    python -m subtitler.steps.guidelines
+    python -m dubtitler.steps.guidelines
 
 Writes project/guidelines.md. It is the largest single input to the translation
 prompt, and after generation it belongs to the human: it is where a job's

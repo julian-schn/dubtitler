@@ -1,6 +1,6 @@
 """Re-import the hand-corrected review doc, preserving every timing.
 
-    python -m subtitler.steps.corrections <video>
+    python -m dubtitler.steps.corrections <video>
 
 Reads work/review/<video>.<lang>.md, the file the human edited, and rewrites
 work/stt/<video>.merged.json with the corrected text.

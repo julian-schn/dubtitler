@@ -178,7 +178,7 @@ flagging goes quiet. `tests/test_langpack.py` guards this.
 
 ## Style
 
-- Steps are runnable standalone: `python -m subtitler.steps.<name> VIDEO`.
+- Steps are runnable standalone: `python -m dubtitler.steps.<name> VIDEO`.
 - Each step prints what it wrote, relative to the repo root.
 - Comments explain why, not what. A comment that restates the code is noise; a
   comment recording which alternative was tried and why it failed is the reason

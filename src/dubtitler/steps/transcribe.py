@@ -1,6 +1,6 @@
 """Run every configured speech-to-text engine over one video.
 
-    python -m subtitler.steps.transcribe <video> [--engine NAME] [--force]
+    python -m dubtitler.steps.transcribe <video> [--engine NAME] [--force]
 
 Writes work/stt/<video>.<engine>.json, one file per engine, all in the same
 schema. Engines that cannot run are reported and skipped rather than aborting

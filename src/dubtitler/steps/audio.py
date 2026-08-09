@@ -1,6 +1,6 @@
 """Extract speech-recognition-ready audio from the source video.
 
-    python -m subtitler.steps.audio <video>
+    python -m dubtitler.steps.audio <video>
 
 Writes three files to work/audio/:
 

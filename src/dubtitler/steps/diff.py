@@ -1,6 +1,6 @@
 """Align the engines, flag what is worth listening to, write the review doc.
 
-    python -m subtitler.steps.diff <video>
+    python -m dubtitler.steps.diff <video>
 
 Reads every work/stt/<video>.<engine>.json that exists. Writes:
 

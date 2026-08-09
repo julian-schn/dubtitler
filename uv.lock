@@ -528,6 +528,70 @@ wheels = [
 ]
 
 [[package]]
+name = "dubtitler"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "python-dotenv" },
+    { name = "srt" },
+]
+
+[package.optional-dependencies]
+anthropic = [
+    { name = "anthropic" },
+]
+assemblyai = [
+    { name = "assemblyai" },
+]
+deepgram = [
+    { name = "deepgram-sdk" },
+]
+elevenlabs = [
+    { name = "elevenlabs" },
+]
+kokoro = [
+    { name = "kokoro-onnx" },
+    { name = "soundfile" },
+]
+ner = [
+    { name = "spacy" },
+]
+openai = [
+    { name = "openai" },
+]
+whisper-local = [
+    { name = "faster-whisper", marker = "sys_platform != 'darwin'" },
+    { name = "mlx-whisper", marker = "sys_platform == 'darwin'" },
+    { name = "numba", marker = "sys_platform == 'darwin'" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.40.0" },
+    { name = "assemblyai", marker = "extra == 'assemblyai'", specifier = ">=0.30.0" },
+    { name = "deepgram-sdk", marker = "extra == 'deepgram'", specifier = ">=3.0.0" },
+    { name = "elevenlabs", marker = "extra == 'elevenlabs'", specifier = ">=1.0.0" },
+    { name = "faster-whisper", marker = "sys_platform != 'darwin' and extra == 'whisper-local'", specifier = ">=1.0.0" },
+    { name = "kokoro-onnx", marker = "extra == 'kokoro'", specifier = ">=0.4.0" },
+    { name = "mlx-whisper", marker = "sys_platform == 'darwin' and extra == 'whisper-local'", specifier = ">=0.4.0" },
+    { name = "numba", marker = "sys_platform == 'darwin' and extra == 'whisper-local'", specifier = ">=0.61" },
+    { name = "openai", marker = "extra == 'openai'", specifier = ">=1.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "soundfile", marker = "extra == 'kokoro'", specifier = ">=0.12.0" },
+    { name = "spacy", marker = "extra == 'ner'", specifier = ">=3.7.0" },
+    { name = "srt", specifier = ">=3.5.0" },
+]
+provides-extras = ["whisper-local", "elevenlabs", "openai", "deepgram", "assemblyai", "anthropic", "ner", "kokoro"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.0" }]
+
+[[package]]
 name = "elevenlabs"
 version = "2.60.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2177,70 +2241,6 @@ name = "srt"
 version = "3.5.3"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/66/b7/4a1bc231e0681ebf339337b0cd05b91dc6a0d701fa852bb812e244b7a030/srt-3.5.3.tar.gz", hash = "sha256:4884315043a4f0740fd1f878ed6caa376ac06d70e135f306a6dc44632eed0cc0", size = 28296, upload-time = "2023-03-28T02:35:44.007Z" }
-
-[[package]]
-name = "subtitler"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "python-dotenv" },
-    { name = "srt" },
-]
-
-[package.optional-dependencies]
-anthropic = [
-    { name = "anthropic" },
-]
-assemblyai = [
-    { name = "assemblyai" },
-]
-deepgram = [
-    { name = "deepgram-sdk" },
-]
-elevenlabs = [
-    { name = "elevenlabs" },
-]
-kokoro = [
-    { name = "kokoro-onnx" },
-    { name = "soundfile" },
-]
-ner = [
-    { name = "spacy" },
-]
-openai = [
-    { name = "openai" },
-]
-whisper-local = [
-    { name = "faster-whisper", marker = "sys_platform != 'darwin'" },
-    { name = "mlx-whisper", marker = "sys_platform == 'darwin'" },
-    { name = "numba", marker = "sys_platform == 'darwin'" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.40.0" },
-    { name = "assemblyai", marker = "extra == 'assemblyai'", specifier = ">=0.30.0" },
-    { name = "deepgram-sdk", marker = "extra == 'deepgram'", specifier = ">=3.0.0" },
-    { name = "elevenlabs", marker = "extra == 'elevenlabs'", specifier = ">=1.0.0" },
-    { name = "faster-whisper", marker = "sys_platform != 'darwin' and extra == 'whisper-local'", specifier = ">=1.0.0" },
-    { name = "kokoro-onnx", marker = "extra == 'kokoro'", specifier = ">=0.4.0" },
-    { name = "mlx-whisper", marker = "sys_platform == 'darwin' and extra == 'whisper-local'", specifier = ">=0.4.0" },
-    { name = "numba", marker = "sys_platform == 'darwin' and extra == 'whisper-local'", specifier = ">=0.61" },
-    { name = "openai", marker = "extra == 'openai'", specifier = ">=1.0.0" },
-    { name = "python-dotenv", specifier = ">=1.0.0" },
-    { name = "soundfile", marker = "extra == 'kokoro'", specifier = ">=0.12.0" },
-    { name = "spacy", marker = "extra == 'ner'", specifier = ">=3.7.0" },
-    { name = "srt", specifier = ">=3.5.0" },
-]
-provides-extras = ["whisper-local", "elevenlabs", "openai", "deepgram", "assemblyai", "anthropic", "ner", "kokoro"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.0" }]
 
 [[package]]
 name = "sympy"

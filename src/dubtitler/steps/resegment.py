@@ -1,6 +1,6 @@
 """Turn translated sentences into subtitle files.
 
-    python -m subtitler.steps.resegment <video>
+    python -m dubtitler.steps.resegment <video>
 
 Reads work/stt/<video>.sentences.json, which `translate` filled in, and writes
 one SRT per language plus work/stt/<video>.cues.json for the review page and QC.

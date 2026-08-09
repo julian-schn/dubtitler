@@ -32,12 +32,12 @@ def models_dir() -> Path:
     Deliberately *not* under the job root. This repository is cloned once per
     job, and 340 MB fetched again for every clone is the kind of default that
     makes people switch the feature off. One copy per machine, shared by every
-    job, overridable with SUBTITLER_MODELS for a pinned or air-gapped setup.
+    job, overridable with DUBTITLER_MODELS for a pinned or air-gapped setup.
     """
-    if env := os.environ.get("SUBTITLER_MODELS"):
+    if env := os.environ.get("DUBTITLER_MODELS"):
         return Path(env)
     cache = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
-    return Path(cache) / "subtitler" / "models"
+    return Path(cache) / "dubtitler" / "models"
 
 # Pack code -> the language string kokoro-onnx expects. The two are close but
 # not identical, and passing a pack code straight through yields silence rather
@@ -94,7 +94,7 @@ class Kokoro(Base):
                 f"  mkdir -p {where} && cd {where}\n"
                 f"  curl -LO {RELEASE}/{MODEL_FILE}\n"
                 f"  curl -LO {RELEASE}/{VOICES_FILE}\n"
-                f"  (set SUBTITLER_MODELS to keep them somewhere else)"
+                f"  (set DUBTITLER_MODELS to keep them somewhere else)"
             )
         return None
 

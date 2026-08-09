@@ -2,13 +2,13 @@
 
 The German numbers here are not arbitrary examples: folding spelled-out numbers
 against digits, and folding dialect elision, is what took cross-engine flagging
-on the reference job from 87% of segments to 61%. A regression in `canonical()`
-does not fail loudly, it just floods the review gate, so it is pinned here.
+on a real job from 87% of segments to 61%. A regression in `canonical()` does
+not fail loudly, it just floods the review gate, so it is pinned here.
 """
 
 import pytest
 
-from subtitler import langpack
+from dubtitler import langpack
 
 SHIPPED = ["de", "nb", "en"]
 

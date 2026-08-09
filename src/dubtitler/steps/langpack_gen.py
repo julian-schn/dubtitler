@@ -1,6 +1,6 @@
 """Generate a language pack for a language that does not have one yet.
 
-    python -m subtitler.steps.langpack_gen <code>
+    python -m dubtitler.steps.langpack_gen <code>
 
 Writes lang/<code>.toml. From that moment it is an ordinary file: review it,
 correct it, commit it. Nothing consults a model at runtime, so two runs of the

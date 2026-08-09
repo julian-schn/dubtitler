@@ -1,5 +1,5 @@
 [project]
-name = "subtitler"
+name = "dubtitler"
 version = "0.1.0"
 description = "Agent-powered subtitling and dubbing: multi-engine transcription, sentence-level translation, and voiceover for any language pair"
 readme = "README.md"
@@ -45,7 +45,7 @@ anthropic = ["anthropic>=0.40.0"]
 ner = ["spacy>=3.7.0"]
 # Dubbing. The onnx build rather than the torch one: it is an order of magnitude
 # smaller to install, and the two model files it wants are fetched once by hand
-# (see src/subtitler/tts/kokoro.py, which prints the commands).
+# (see src/dubtitler/tts/kokoro.py, which prints the commands).
 kokoro = ["kokoro-onnx>=0.4.0", "soundfile>=0.12.0"]
 
 [dependency-groups]
@@ -56,10 +56,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 # A src layout, installed into the job's own venv so that
-# `python -m subtitler.steps.<name>` works from anywhere in the clone. Without
+# `python -m dubtitler.steps.<name>` works from anywhere in the clone. Without
 # this the Makefile works only where PYTHONPATH happens to be set.
 [tool.hatch.build.targets.wheel]
-packages = ["src/subtitler"]
+packages = ["src/dubtitler"]
 # Named explicitly: without it the editable install writes an empty path file
 # and every documented command fails with ModuleNotFoundError.
 dev-mode-dirs = ["src"]

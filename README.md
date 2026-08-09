@@ -1,4 +1,4 @@
-# subtitler
+# dubtitler
 
 An agent-powered pipeline that turns a recording of someone speaking into
 **subtitles and a dub** in another language, with two places where a human looks
@@ -142,7 +142,7 @@ verifies quickly.
 Set them in `config.toml`. A vote is only worth something when the voters fail
 independently, so two Whisper variants agreeing tells you very little.
 
-Adding one is a module in `src/subtitler/stt/` that returns a `Transcript`.
+Adding one is a module in `src/dubtitler/stt/` that returns a `Transcript`.
 
 ## Voices and dubbing
 
@@ -157,7 +157,7 @@ make dub V=IMG_1234
 | `rehearsal` | free, offline | any — a placeholder tone, not speech |
 
 `kokoro` is the default. It downloads two model files once into
-`~/.cache/subtitler/models`, shared by every clone, and prints the commands if
+`~/.cache/dubtitler/models`, shared by every clone, and prints the commands if
 they are missing. It handles the `de → en` pair this ships configured for.
 **It cannot speak German or Norwegian**, though, so a job targeting either needs
 `elevenlabs`; the step refuses at startup rather than part way through, and
@@ -222,7 +222,7 @@ binaries: it builds a video, synthesises over it, ducks, mixes and muxes. It
 needs `ffmpeg` on `PATH` and nothing else — no key, no model, no network.
 
 CI runs the whole suite on Ubuntu across 3.11 to 3.13 and on macOS, and also
-runs one documented `python -m subtitler.steps.<name>` command. That last check
+runs one documented `python -m dubtitler.steps.<name>` command. That last check
 exists because pytest puts `src/` on the path itself, so the suite can pass
 while every command in this README fails on a broken editable install.
 

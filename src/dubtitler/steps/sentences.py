@@ -1,6 +1,6 @@
 """Reconstitute whole sentences from the word-timed transcript.
 
-    python -m subtitler.steps.sentences <video>
+    python -m dubtitler.steps.sentences <video>
 
 Writes work/stt/<video>.sentences.json:
     [{id, start, end, speaker, source, words:[{w,start,end}]}...]

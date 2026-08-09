@@ -8,7 +8,7 @@ rendering bug, and unscaled pixel sizes produced subtitles that looked right at
 
 import pytest
 
-from subtitler.steps.render import REFERENCE_HEIGHT, alpha
+from dubtitler.steps.render import REFERENCE_HEIGHT, alpha
 
 
 def opacity_of(ass_colour: str) -> float:

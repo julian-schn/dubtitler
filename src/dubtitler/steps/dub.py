@@ -1,6 +1,6 @@
 """Speak the translation over the original audio.
 
-    python -m subtitler.steps.dub <video>
+    python -m dubtitler.steps.dub <video>
 
 Voiceover, not replacement. The original stays audible underneath at `duck`,
 ducking out of the way while the dub speaks and back up between sentences. That

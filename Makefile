@@ -1,4 +1,4 @@
-# Every target is a thin wrapper over `python -m subtitler.steps.<name>`.
+# Every target is a thin wrapper over `python -m dubtitler.steps.<name>`.
 # The steps are the interface; this file exists so the common ones are one word
 # and so the order is written down somewhere.
 #
@@ -11,7 +11,7 @@
         resegment qc render dub review guidelines titles langpack check test \
         clean new-job
 
-PY  := uv run python -m subtitler.steps
+PY  := uv run python -m dubtitler.steps
 V   ?=
 PORT ?= 8731
 

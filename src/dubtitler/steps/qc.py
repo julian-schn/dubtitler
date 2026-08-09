@@ -1,6 +1,6 @@
 """Validate the generated subtitles. Exits non-zero if anything is wrong.
 
-    python -m subtitler.steps.qc <video>
+    python -m dubtitler.steps.qc <video>
 
 This is the gate before render. It re-derives every limit from config.toml and
 checks the files on disk rather than the objects in memory, so it catches
