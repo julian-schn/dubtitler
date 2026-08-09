@@ -6,7 +6,7 @@ name = "Untitled"
 # BCP-47-ish codes. Anything goes: a language pack is generated on first use
 # if one does not exist in lang/.
 source_lang = "de"
-target_lang = "nb"
+target_lang = "en"
 
 [stt]
 # Engines to run, in order. More than one enables cross-engine confidence
@@ -49,7 +49,7 @@ weak_word_cluster = 2      # or this many weak words together
 [llm]
 # "auto" uses the API when a key is present and otherwise emits prompts for a
 # coding agent to answer. "anthropic" forces the API, "agent" forces prompts.
-provider = "auto"
+provider = "agent"
 model = "claude-opus-5"
 
 [subtitles]

@@ -27,7 +27,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-whisper-local = ["mlx-whisper>=0.4.0; sys_platform == 'darwin'", "faster-whisper>=1.0.0; sys_platform != 'darwin'"]
+whisper-local = [
+    "mlx-whisper>=0.4.0; sys_platform == 'darwin'",
+    "faster-whisper>=1.0.0; sys_platform != 'darwin'",
+    # mlx-whisper asks for `numba` with no floor. Modern numba caps numpy, so
+    # a resolver holding a newer numpy backtracks numba instead -- all the way
+    # to 0.53, which predates Python 3.11 and fails to build with a message
+    # about the Python version rather than about numpy. Pin the floor and let
+    # numpy be the thing that moves.
+    "numba>=0.61; sys_platform == 'darwin'",
+]
 elevenlabs = ["elevenlabs>=1.0.0"]
 openai = ["openai>=1.0.0"]
 deepgram = ["deepgram-sdk>=3.0.0"]
