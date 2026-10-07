@@ -1,0 +1,111 @@
+# Danish language pack.
+
+name = "Danish"
+# Three-letter code. Cloud engines and the MP4 subtitle language tag both
+# reject the two-letter form.
+iso3 = "dan"
+mp4_lang = "dan"
+ner_model = "da_core_news_lg"
+
+notes = """
+Spoken Danish reduces heavily: endings, d, g and r are swallowed, so speech
+engines disagree on spelling far more often than on words. Compounds are
+written as one word, as in Norwegian, and splitting one is an error. Numbers
+from 50 to 99 are vigesimal (halvtreds = 50, firs = 80) and the unit comes
+first, joined by "og": enogtyve = 21. The never_trail list keeps a line break
+out of an article-noun pair or off a dangling preposition.
+"""
+
+function_words = [
+  "en", "et", "den", "det", "de", "denne", "dette", "disse",
+  "og", "eller", "men", "for", "så", "at", "som", "når", "da", "fordi",
+  "hvis", "der", "mens", "end", "om", "jeg", "du", "han", "hun", "vi",
+  "i", "jer", "mig", "dig", "sig", "os", "ham", "hende", "dem",
+  "er", "var", "har", "havde", "bliver", "blev", "kan", "kunne", "må",
+  "skal", "skulle", "vil", "ville", "ikke", "ingen", "noget", "nogen",
+  "på", "til", "af", "med", "fra", "under", "over", "ved", "hos",
+  "mod", "efter", "før", "gennem", "uden", "mellem", "blandt",
+  "jo", "nu", "her", "bare", "også", "meget", "helt", "lige", "nok",
+  # Fillers and hesitations.
+  "øh", "øhm", "altså", "ik", "ikk",
+]
+
+negations = ["ikke", "ik", "ikk", "ingen", "intet", "aldrig", "hverken", "uden", "ingenting"]
+
+break_before = [
+  "og", "men", "eller", "for", "så", "at", "som", "når", "da", "fordi",
+  "hvis", "der", "mens", "end", "om", "til", "med", "på", "i", "af", "fra",
+]
+
+never_trail = [
+  "en", "et", "den", "det", "de", "min", "mit", "mine", "din", "vores", "sin",
+  "og", "men", "eller", "at", "som", "i", "på", "til", "af", "med",
+  "for", "fra", "om", "under", "over", "ved", "hos", "mod", "efter", "før",
+  "gennem", "uden", "mellem", "blandt", "hver", "nogle", "alle", "denne",
+]
+
+# Formal address, rare in modern Danish speech. Only a mid-sentence
+# occurrence counts, since `De` is also the plural pronoun at sentence start.
+polite_forms = ["De", "Dem", "Deres"]
+
+abbreviations = [
+  "bl.a", "f.eks", "osv", "ca", "dvs", "jf", "kr", "nr", "pga", "mht",
+  "evt", "inkl", "ekskl", "dr", "prof", "st", "vs", "iflg", "mv", "mfl",
+  "hhv", "ang", "ift",
+]
+
+# Danish endings carry grammar (definite -en/-et, plural -e/-er), so nothing
+# is folded despite the heavy spoken reduction.
+elision_suffixes = []
+
+# Characters per second of ordinary speech. Danish is spoken fast, but
+# reduction means fewer written characters per second than it sounds.
+speaking_rate = 14.0
+
+[transliterate]
+"æ" = "ae"
+"ø" = "oe"
+"å" = "aa"
+
+[numbers]
+joiner = "og"   # enogtyve = 21, unit first like German
+
+[numbers.units]
+nul = 0
+en = 1
+et = 1
+to = 2
+tre = 3
+fire = 4
+fem = 5
+seks = 6
+syv = 7
+otte = 8
+ni = 9
+
+[numbers.teens]
+ti = 10
+elleve = 11
+tolv = 12
+tretten = 13
+fjorten = 14
+femten = 15
+seksten = 16
+sytten = 17
+atten = 18
+nitten = 19
+
+# 50-90 are vigesimal: halvtreds is "half-third times twenty".
+[numbers.tens]
+tyve = 20
+tredive = 30
+fyrre = 40
+halvtreds = 50
+tres = 60
+halvfjerds = 70
+firs = 80
+halvfems = 90
+
+[numbers.scale]
+hundrede = 100
+tusind = 1000
