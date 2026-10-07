@@ -298,8 +298,8 @@ def dubjob(tmp_path: Path):
 def test_rehearsal_produces_both_deliverables(dubjob):
     dubjob.dub()
 
-    audio = dubjob.root / "out" / "CLIP.nb.dub.m4a"
-    video = dubjob.root / "out" / "CLIP.nb.dub.mp4"
+    audio = dubjob.root / "out" / "clip.nb.dub.m4a"
+    video = dubjob.root / "out" / "clip.nb.dub.mp4"
     assert audio.exists() and audio.stat().st_size > 0
     assert video.exists() and video.stat().st_size > 0
 
@@ -313,7 +313,7 @@ def test_the_dub_keeps_the_video_and_the_full_duration(dubjob):
     from dubtitler.core import ffprobe
 
     dubjob.dub()
-    video = dubjob.root / "out" / "CLIP.nb.dub.mp4"
+    video = dubjob.root / "out" / "clip.nb.dub.mp4"
 
     assert float(ffprobe(video, "format=duration")) == pytest.approx(12.0, abs=0.5)
     assert ffprobe(video, "stream=codec_name", stream="v:0") == "h264"
