@@ -24,7 +24,7 @@ spine = "elevenlabs"
 # the same way rather than following whatever a provider now calls "latest".
 [models]
 # whisper-local = "large-v3"
-# elevenlabs = "scribe_v1"
+# elevenlabs = "scribe_v2"
 # deepgram = "nova-3"
 # openai = "whisper-1"
 

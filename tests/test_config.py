@@ -59,7 +59,7 @@ def test_partial_sections_keep_the_defaults_they_omit(job_config):
 
 def test_engines_fall_back_to_their_own_model(job_config):
     job_config("[project]\nname = 'x'\n")
-    assert stt.get("elevenlabs").model() == "scribe_v1"
+    assert stt.get("elevenlabs").model() == "scribe_v2"
     assert stt.get("deepgram").model() == "nova-3"
     assert stt.get("openai").model() == "whisper-1"
 
@@ -67,15 +67,15 @@ def test_engines_fall_back_to_their_own_model(job_config):
 def test_a_pinned_model_overrides_the_default(job_config):
     """Pinning is the point: a job re-run months later should not silently
     follow whatever a provider has started calling "latest"."""
-    job_config('[models]\nelevenlabs = "scribe_v2"\n')
-    assert stt.get("elevenlabs").model() == "scribe_v2"
+    job_config('[models]\nelevenlabs = "scribe_v1"\n')
+    assert stt.get("elevenlabs").model() == "scribe_v1"
     assert stt.get("deepgram").model() == "nova-3"     # others unaffected
 
 
 def test_an_empty_pin_means_the_engine_default(job_config):
     """An empty string is how config.toml spells "I have not chosen"."""
     job_config('[models]\nelevenlabs = ""\n')
-    assert stt.get("elevenlabs").model() == "scribe_v1"
+    assert stt.get("elevenlabs").model() == "scribe_v2"
 
 
 def test_whisper_local_pins_per_backend(job_config):

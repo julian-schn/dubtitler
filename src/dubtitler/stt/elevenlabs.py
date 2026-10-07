@@ -33,7 +33,7 @@ class ElevenLabsScribe(Base):
     audio = "flac"
     package = "elevenlabs"
     env_key = "ELEVENLABS_API_KEY"
-    default_model = "scribe_v1"
+    default_model = "scribe_v2"
 
     def transcribe(self, audio: Path, language: str) -> Transcript:
         from elevenlabs.client import ElevenLabs
