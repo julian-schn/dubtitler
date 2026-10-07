@@ -124,7 +124,7 @@ def ffmpeg(*args: str, script: str | None = None) -> subprocess.CompletedProcess
     """Run ffmpeg quietly, raising FFmpegError with its stderr on failure.
 
     `script` is a filter graph. It is written to a temp file and passed as
-    `-filter_complex_script` rather than inline, so that a graph too long to
+    a path rather than inline, so that a graph too long to
     read in a process listing is still sitting on disk after a failure. It is
     inserted immediately before the last argument, which every call site keeps
     as the output path.
@@ -139,9 +139,30 @@ def ffmpeg(*args: str, script: str | None = None) -> subprocess.CompletedProcess
         fh.write(script)
         path = fh.name
     try:
-        return _run([*base, *args[:-1], "-filter_complex_script", path, args[-1]])
+        return _run([*base, *args[:-1], *_script_option(path), args[-1]])
     finally:
         os.unlink(path)
+
+
+@lru_cache(maxsize=1)
+def _ffmpeg_major() -> int | None:
+    out = _run(["ffmpeg", "-hide_banner", "-version"]).stdout
+    m = re.search(r"version n?(\d+)\.", out)
+    return int(m.group(1)) if m else None
+
+
+def _script_option(path: str) -> list[str]:
+    """How to hand ffmpeg a filter graph from a file.
+
+    `-filter_complex_script` is the only spelling ffmpeg 6 knows, and current
+    Homebrew builds reject it outright. `-/filter_complex` replaced it in 7.0,
+    so neither works everywhere. Git builds report no release number and are
+    assumed current.
+    """
+    major = _ffmpeg_major()
+    if major is not None and major < 7:
+        return ["-filter_complex_script", path]
+    return ["-/filter_complex", path]
 
 
 def ffprobe(path: Path | str, entry: str, stream: str | None = None) -> str:
